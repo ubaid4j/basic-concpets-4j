@@ -5,5 +5,5 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans
                             http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
     
-    <bean id="helloWorld" class="com.ubaid.for4.HelloWord" />    
+    <bean id="helloWorld" class="com.ubaid.forj.xml.HelloWorld" />    
 </beans>

@@ -1,6 +1,6 @@
-package com.ubaid.for4;
+package com.ubaid.forj.xml;
 
-public class HelloWord {
+public class HelloWorld {
 
     @Override
     public String toString() {
