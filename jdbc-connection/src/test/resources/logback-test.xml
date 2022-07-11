@@ -1,7 +1,7 @@
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n</pattern>
+            <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -12,5 +12,7 @@
     <logger name="org.testcontainers" level="INFO"/>
     <logger name="com.github.dockerjava" level="WARN"/>
     <logger name="com.ubaid.forj" level="DEBUG"/>
-    <logger name="java.sql" level="trace"/>
+    <logger name="java.sql" level="TRACE"/>
+    <logger name="org.apache.commons.dbcp2" level="TRACE"/>
+    <logger name="com.zaxxer.hikari" level="TRACE"/>
 </configuration>
