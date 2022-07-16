@@ -12,8 +12,10 @@
         http://www.springframework.org/schema/beans 
         http://www.springframework.org/schema/beans/spring-beans-4.2.xsd">
 
+    <!--    component scan to add beans (annotated with Configuration, Controller, Component, Service, Repository, Bean) -->
     <context:component-scan base-package="com" scoped-proxy="interfaces"/>
-
+    
+    <!--    mapping on annotated methods with @RequestMapping or @GetMapping etc -->
     <mvc:annotation-driven/>
     
     <bean
@@ -21,7 +23,4 @@
         <property name="prefix" value="/WEB-INF/view/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
-
-    <mvc:view-controller path="/" view-name="index" />
-
 </beans>

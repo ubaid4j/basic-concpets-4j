@@ -10,6 +10,6 @@ public class API {
     
     @GetMapping
     public String getInfo() {
-        return "API v1";
+        return "API v2";
     }
 }

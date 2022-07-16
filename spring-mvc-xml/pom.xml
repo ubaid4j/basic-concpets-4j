@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.ubaid.learn</groupId>
-    <artifactId>spring-mvc-basic-2</artifactId>
+    <artifactId>spring-mvc-xml</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
@@ -15,33 +15,36 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.3.0-alpha16</version>
-        </dependency>
+        
+        <!--        spring web mvc      -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>5.3.21</version>
         </dependency>
+        
+        <!--        Need dependency to register dispatcher servlet-->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>4.0.1</version>
             <scope>provided</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>javax.servlet.jsp</groupId>-->
-<!--            <artifactId>jsp-api</artifactId>-->
-<!--            <version>2.2</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
+        
+        <!--        for view resolver purpose   -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.2</version>
         </dependency>
+
+        <!--        Logging Purpose     -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.3.0-alpha16</version>
+        </dependency>
+
     </dependencies>
 
     <build>
