@@ -22,6 +22,6 @@ public class App extends AbstractAnnotationConfigDispatcherServletInitializer {
 
     @Override
     protected Filter[] getServletFilters() {
-        return super.getServletFilters();
+        return new Filter[] {new SimpleFilter()};
     }
 }

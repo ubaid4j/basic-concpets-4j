@@ -31,13 +31,6 @@
             <scope>provided</scope>
         </dependency>
         
-        <!--        for view resolver purpose   -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
-        </dependency>
-
         <!--        Logging Purpose     -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
