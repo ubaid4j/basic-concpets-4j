@@ -1,0 +1,1 @@
+<h1>Its Ubaid Style, <a href="/api">Go for APIs</a></h1>
