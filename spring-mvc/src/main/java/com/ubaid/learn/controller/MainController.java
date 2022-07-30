@@ -10,6 +10,6 @@ public class MainController {
     
     @GetMapping
     public String getInfo() {
-        return "This is my info";
+        throw new RuntimeException("errorCode.badRequest");
     }
 }
