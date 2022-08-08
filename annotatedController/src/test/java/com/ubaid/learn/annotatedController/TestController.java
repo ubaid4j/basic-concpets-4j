@@ -35,10 +35,6 @@ public class TestController {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
     }
     
-    @Test
-    void loadContext() {
-        
-    }
     
     @Test
     void testHelloWorld() throws Exception {
@@ -52,5 +48,30 @@ public class TestController {
             .andExpect(jsonPath("$" ).value("Hello World"));
 
     }
-    
+
+    @Test
+    void testHead() throws Exception {
+        RequestBuilder headHelloWorld = MockMvcRequestBuilders
+            .head("/");
+
+        mockMvc
+            .perform(headHelloWorld)
+            .andDo(print())
+            .andExpect(status().isOk());
+
+    }
+
+    @Test
+    void testOptions() throws Exception {
+        RequestBuilder optionsHelloWorld = MockMvcRequestBuilders
+            .options("/");
+
+        mockMvc
+            .perform(optionsHelloWorld)
+            .andDo(print())
+            .andExpect(status().isOk());
+
+    }
+
+
 }
