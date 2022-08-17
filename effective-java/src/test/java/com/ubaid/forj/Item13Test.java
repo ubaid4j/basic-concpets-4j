@@ -1,11 +1,13 @@
 package com.ubaid.forj;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import com.ubaid.forj.HashTableP.Entry;
 import com.ubaid.forj.util.PhoneNumber;
 import java.util.Arrays;
 import java.util.EmptyStackException;
@@ -15,6 +17,7 @@ import org.opentest4j.AssertionFailedError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+//ITEM 13: OVERRIDE CLONE JUDICIOUSLY
 public class Item13Test {
     
     private static final Logger logger = LoggerFactory.getLogger(Item13Test.class);
@@ -64,6 +67,28 @@ public class Item13Test {
         assertNotSame(hashTableP, hashTableP1);
         assertThrows(AssertionFailedError.class, () -> assertNotEquals(hashTableP, hashTableP1), 
             "As I altered the copied one, it should not equal to its original one, but it throws exception as both are equal. So, there is problem in hash table as cloning is not working as expected. the cloned object is not altered one");
+
+    }
+    @Test
+    void hashTableTest() {
+        HashTable hashTable = new HashTable();
+        logger.debug("Original: {}", hashTable);
+        
+        HashTable hashTable2 = hashTable.clone();
+        logger.debug("Copied: {}", hashTable2);
+
+        assertNotSame(hashTable, hashTable2);
+        assertEquals(hashTable, hashTable2);
+        
+        HashTableP.Entry entry = hashTable2.buckets[0];
+        entry.value = "Kashif";
+        logger.debug("\naltered the copied one\n");
+        
+        logger.debug("Original: {}", hashTable);
+        logger.debug("Copied: {}", hashTable2);
+        assertNotSame(hashTable, hashTable2);
+        assertDoesNotThrow(() -> assertNotEquals(hashTable, hashTable2), 
+            "As I altered the copied one, it should not equal to its original one");
 
     }
 }
@@ -156,6 +181,14 @@ class HashTableP implements Cloneable {
             this.value = value;
             this.next = next;
         }
+        
+        Entry deepCopy() {
+            Entry result = new Entry(key, value, next);
+            for (Entry p = result; p.next != null; p = p.next) {
+                p.next = new Entry(p.next.key, p.next.value, p.next.next);
+            }
+            return result;
+        }
 
         @Override
         public boolean equals(Object o) {
@@ -166,7 +199,7 @@ class HashTableP implements Cloneable {
                 return false;
             }
             Entry entry = (Entry) o;
-            return key.equals(entry.key) && value.equals(entry.value) && next.equals(entry.next);
+            return key.equals(entry.key) && value.equals(entry.value) && Objects.equals(next, entry.next);
         }
 
         @Override
@@ -216,6 +249,56 @@ class HashTableP implements Cloneable {
             return hashTableP;
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException(e);
+        }
+    }
+}
+
+class HashTable implements Cloneable {
+    Entry[] buckets = new Entry[2];
+    
+    {
+        Entry entry1 = new Entry(2, "attiq", null);
+        Entry entry = new Entry(1, "ubaid", entry1);
+        buckets[0] = entry;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        HashTable hashTable = (HashTable) o;
+        return Arrays.equals(buckets, hashTable.buckets);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(buckets);
+    }
+
+    @Override
+    public String toString() {
+        return "HashTable{" +
+            "buckets=" + Arrays.toString(buckets) +
+            '}';
+    }
+
+    @Override
+    public HashTable clone() {
+        try {
+            HashTable hashTable = (HashTable) super.clone();
+            hashTable.buckets = new Entry[buckets.length];
+            for (int i =0; i < buckets.length; i++) {
+                if (buckets[i] != null) {
+                    hashTable.buckets[i] = buckets[i].deepCopy();
+                }
+            }
+            return hashTable;
+        } catch (CloneNotSupportedException exp) {
+            throw new RuntimeException(exp);
         }
     }
 }
