@@ -50,8 +50,21 @@ public class FirstTest {
             s = s.replaceFirst(hourS + ":", hour + ":");
         }
         System.out.println(s);
-        
-        
     }
+    
+    @Test
+    public void test3() {
+        String s1 = "yes";
+
+        String s2 = "yes";
+
+        String s3 = new String(s1);
+        
+        logger.debug("s1 == s2: {}",  s1 == s2);
+        logger.debug("s3 == s1: {}",  s3 == s1);
+        logger.debug("s1.equals(s2): {}",  s1.equals(s2));
+        logger.debug("s3.equals(s1): {}",  s3.equals(s1));
+    }
+    
 
 }
