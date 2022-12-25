@@ -9,21 +9,21 @@ public class Item50Test {
     
     @Test
     void test() {
-        Period period = new Period(new Date(), new Date());
-        System.out.println("Period created: " + period);
+        Period_ period = new Period_(new Date(), new Date());
+        System.out.println("Period_ created: " + period);
         String p1 = period.toString();
         
         Date date = period.start();
         date.setYear(97);
         String p2 = period.toString();
-        System.out.println("Period: " + period);
+        System.out.println("Period_: " + period);
         
         
         Assertions.assertEquals(p1, p2);
     }
 }
 
-final class Period {
+final class Period_ {
     private final Date start;
     private final Date end;
 
@@ -35,7 +35,7 @@ final class Period {
      * @throws IllegalArgumentException if start is after end
      * @throws NullPointerException if start or end is null
      */
-    public Period(Date start, Date end) {
+    public Period_(Date start, Date end) {
         this.start = new Date(start.getTime());
         this.end = new Date(end.getTime());
         if (this.start.after(this.end)) {
@@ -55,7 +55,7 @@ final class Period {
 
     @Override
     public String toString() {
-        return "Period{" +
+        return "Period_{" +
             "start=" + start +
             ", end=" + end +
             '}';
