@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -71,6 +72,31 @@ public class TestController {
             .andDo(print())
             .andExpect(status().isOk());
 
+    }
+    
+    
+    @RepeatedTest(value = 5)
+    void testServiceInitializationCounter() throws Exception{
+        RequestBuilder getInitializationCounter = MockMvcRequestBuilders
+            .get("/initialization-counter");
+
+        mockMvc
+            .perform(getInitializationCounter)
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$" ).value(1));
+    }
+    
+    @Test
+    void testPersonsEndPoint() throws Exception {
+        RequestBuilder getInitializationCounter = MockMvcRequestBuilders
+            .get("/persons")
+            .characterEncoding("UTF-8");
+
+        mockMvc
+            .perform(getInitializationCounter)
+            .andDo(print())
+            .andExpect(status().isOk());
     }
 
 

@@ -9,8 +9,8 @@ public final class Period implements Serializable {
     @Serial
     private static final long serialVersionUID = 4647424730390249716L;
 
-    private final Date start;
-    private final Date end;
+    private Date start;
+    private Date end;
 
     public Period(Date start, Date end) {
         this.start = new Date(start.getTime());

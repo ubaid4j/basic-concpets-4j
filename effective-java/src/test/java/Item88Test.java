@@ -24,18 +24,8 @@ public class Item88Test {
     @Test
     void test() {
         Period period = new Period(new Date(), new Date());
-        Period p = (Period) deserialize(serializedForm);
+        Period p = (Period) TestUtil.deserialize(serializedForm);
         System.out.println(p);
-    }
-    
-    static Object deserialize(byte[] sf) {
-        try {
-            return 
-                new ObjectInputStream(new ByteArrayInputStream(sf))
-                .readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            throw new IllegalArgumentException(e);
-        }
     }
     
     
