@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    
+    <bean id="engine" class="dev.ubaid.ioccontainer.beans.Engine">
+        <constructor-arg value="1"/>
+    </bean>
+    
+    <bean id="car" class="dev.ubaid.ioccontainer.beans.Car">
+        <constructor-arg index="0" value="1"/>
+        <constructor-arg index="1" ref="engine"/>
+    </bean>
+    
+</beans>

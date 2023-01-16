@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serial;
 import java.io.Serializable;
@@ -9,8 +10,8 @@ public final class Period implements Serializable {
     @Serial
     private static final long serialVersionUID = 4647424730390249716L;
 
-    private Date start;
-    private Date end;
+    private final Date start;
+    private final Date end;
 
     public Period(Date start, Date end) {
         this.start = new Date(start.getTime());
@@ -42,10 +43,38 @@ public final class Period implements Serializable {
     
     @Serial
     private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+/*
         ois.defaultReadObject();
         this.start = new Date(start.getTime());
         this.end = new Date(end.getTime());
         validateDate();
+*/
+        
+        throw new InvalidObjectException("Proxy required");
+    }
+    
+    @Serial
+    private Object writeReplace() {
+        return new SerializationProxy(this);
+    }
+    
+    private static class SerializationProxy implements Serializable {
+        
+        @Serial
+        private static final long serialVersionUID = 23409823485285L;
+        
+        private final Date start;
+        private final Date end;
+        
+        SerializationProxy(Period p) {
+            this.start = p.start;
+            this.end = p.end;
+        }
+        
+        @Serial
+        private Object readResolve() {
+            return new Period(start, end);
+        }
     }
 
 }
