@@ -1,6 +1,7 @@
 package com.ubaid.learn.annotatedController.service;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ public class AppService {
     public AppService() {
         initializedCounter.incrementAndGet();
     }
-    
+
     public int getInitializedCounter() {
         return initializedCounter.get();
     }

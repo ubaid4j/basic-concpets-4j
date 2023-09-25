@@ -9,6 +9,8 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -23,7 +25,7 @@ public class SpringBean implements InitializingBean, DisposableBean, BeanNameAwa
     BeanPostProcessor {
 
     private final String detail;
-    
+
     public SpringBean() {
         detail = "Most Confidential: " + getClass().getSimpleName();
     }
@@ -66,19 +68,19 @@ public class SpringBean implements InitializingBean, DisposableBean, BeanNameAwa
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
         throws BeansException {
-        
+
         log.debug("post process bean factory");
         print(beanFactory.getBeanNamesIterator());
-        
+
     }
-    
+
     private void print(Iterator<String> iterator) {
         while (iterator.hasNext()) {
             String name = iterator.next();
             log.debug("{}", name);
         }
     }
-    
+
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName)
@@ -99,4 +101,8 @@ public class SpringBean implements InitializingBean, DisposableBean, BeanNameAwa
         log.debug("#-------------postProcessAfterInitialization--------------end#");
         return BeanPostProcessor.super.postProcessAfterInitialization(bean, beanName);
     }
+
+    @Autowired
+    @Qualifier("name")
+    String name;
 }
