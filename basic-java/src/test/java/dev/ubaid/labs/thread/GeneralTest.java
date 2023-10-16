@@ -1,16 +1,23 @@
 package dev.ubaid.labs.thread;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Slf4j
 public class GeneralTest {
+    
+    private final ExecutorService executorService = Executors.newCachedThreadPool();
 
     @Test
     void test() throws InterruptedException{
@@ -47,6 +54,49 @@ public class GeneralTest {
         t1.join();
         t2.join();
         t3.join();
+    }
+    
+    @Test
+    @SneakyThrows
+    void differenceBetweenThreadVsRunnable() {
+        //Not able to submit in executor service
+        try (ExecutorService executorService = Executors.newCachedThreadPool()) {
+            New new_ = new New();
+            executorService.submit(new_);
+            executorService.submit(new_);
+            executorService.submit(new_);
+            executorService.submit(new_);
+            executorService.submit(new_);
+            executorService.submit(new_);
+        }
+        
+        Thread legacy = new Legacy();
+        Thread legacy2 = new Legacy();
+        Thread legacy3 = new Legacy();
+        Thread legacy4 = new Legacy();
+        Thread legacy5 = new Legacy();
+        legacy.start();
+        assertThrows(RuntimeException.class, legacy::start);
+        legacy2.start();
+        legacy3.start();
+        legacy4.start();
+        legacy5.start();
+    }
+    
+    @Test
+    @SneakyThrows
+    void futureTask() {
+        NewV2 new_ = new NewV2();
+        FutureTask<String> task = new FutureTask<>(new_);
+        executorService.submit(task);
+        
+        int count = 1000;
+        while(!task.isDone() && count-- > 0) {
+            log.debug("State: {}", task.state());
+            Thread.sleep(1_000);
+        }
+        log.debug("State: {}", task.state());
+        log.debug("Result: {}", task.get());
     }
     
 }
@@ -110,3 +160,35 @@ class ThreadWithConditionalException extends Thread {
         }
     }
 }
+
+
+
+//######################Difference between extends thread vs implements runnable
+
+@Slf4j
+class Legacy extends Thread {
+    @Override
+    public void run() {
+        String name = currentThread().getName();
+        log.debug("Thread name: {}", name);
+    }
+}
+
+@Slf4j
+class New implements Runnable {
+    @Override
+    public void run() {
+        String name = Thread.currentThread().getName();
+        log.debug("Thread name: {}", name);
+    }
+}
+
+@Slf4j
+class NewV2 implements Callable<String> {
+    @Override
+    public String call() throws Exception {
+        Thread.sleep(ThreadLocalRandom.current().nextLong(9_000));
+        return Thread.currentThread().getName();
+    }
+}
+
