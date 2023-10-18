@@ -1,7 +1,6 @@
 package dev.ubaid.labs.list;
 
 import dev.ubaid.labs.list.LinkedList.Node;
-import java.util.Collections;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -34,7 +33,7 @@ public class ListTest {
         list.push(4);
         
         list.head.next.next = list.head.next;
-        Assertions.assertFalse(!list.hasLoop());
+        Assertions.assertTrue(list.hasLoop());
     }
     
     @Test

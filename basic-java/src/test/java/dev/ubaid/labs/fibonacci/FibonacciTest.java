@@ -44,5 +44,24 @@ public class FibonacciTest {
         }
         return fib;
     }
+    
+//    --------------------fibonacci testing again -------------------------------
+    
+    @Test
+    void testFibonacciTill15() {
+        long[] expectedFibonacciSeries = new long[] {1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987};
+        
+        Assertions.assertArrayEquals(expectedFibonacciSeries, actualFibonacciSeries(), "Fibonacci series should be equal");
+    }
+    
+    static long[] actualFibonacciSeries() {
+        final long[] fib = new long[15];
+        fib[0] = 1;
+        fib[1] = 2;
+        for (int i = 2; i < 15; i++) {
+            fib[i] = fib[i - 2] + fib[i - 1];
+        }
+        return fib;
+    }
 }   
  

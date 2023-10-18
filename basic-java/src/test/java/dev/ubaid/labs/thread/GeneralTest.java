@@ -1,5 +1,6 @@
 package dev.ubaid.labs.thread;
 
+import java.util.Hashtable;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -99,6 +100,19 @@ public class GeneralTest {
         log.debug("Result: {}", task.get());
     }
     
+    @Test
+    @SneakyThrows
+    void waitAndNotify() {
+        SumCalculator sumCalculator = new SumCalculator();
+        sumCalculator.start();
+        
+        synchronized (sumCalculator) {
+            log.debug("Waiting till sum is calculated");
+            sumCalculator.wait();
+            log.info("Sum Calculated");
+        }
+    }
+    
 }
 
 @Slf4j
@@ -192,3 +206,23 @@ class NewV2 implements Callable<String> {
     }
 }
 
+
+//############################################## wait and notify #############################
+@Slf4j
+class SumCalculator extends Thread {
+    
+    @Override
+    public void run() {
+        synchronized (this) {
+            try {
+                Thread.sleep(ThreadLocalRandom.current().nextLong(5_000));
+                log.info("#############--------All Set---------------###############");
+                this.notifyAll();
+            } catch (InterruptedException e) {
+                log.error("error: ", e);
+                this.notifyAll();
+                throw new RuntimeException(e);
+            }
+        }
+    }
+}
