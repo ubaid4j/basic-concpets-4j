@@ -13,25 +13,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Determine changed modules
-        id: changes
-        run: |
-          CHANGED_MODULES=()
-          for file in $(git diff --name-only ${{ github.event.before }} ${{ github.sha }}); do
-            # Extract the module name from the file path
-            module=$(echo "$file" | cut -d'/' -f1)
-            if [ -n "$module" ] && [[ ! " ${CHANGED_MODULES[@]} " =~ " ${module} " ]]; then
-              CHANGED_MODULES+=("$module")
-            fi
-          done
-          echo "Changed modules: ${CHANGED_MODULES[@]}"
-          echo "::set-output name=changed_modules::${CHANGED_MODULES[@]}"
-
       - name: Build and Test
         run: |
-          # Iterate through the changed modules and run 'mvn clean test'
-          for module in ${{ steps.changes.outputs.changed_modules }}; do
-            cd "$module"
-            mvn clean test
-            cd ..
-          done
+          cd basic-java
+          mvn clean test
