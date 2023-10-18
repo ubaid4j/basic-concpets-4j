@@ -8,7 +8,8 @@ public class UnnamedVarsTest {
     
     @Test
     void testUnnamedVariables() {
-        var _ = "hello";
+        //fixme BUG https://bugs.openjdk.org/browse/JDK-8313323
+        //        var _ = "hello";
 
         //  log.debug(_);
         //  java: as of release 21, the underscore keyword '_' is only allowed to declare
