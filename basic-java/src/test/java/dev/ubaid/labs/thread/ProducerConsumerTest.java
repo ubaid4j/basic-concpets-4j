@@ -1,6 +1,5 @@
 package dev.ubaid.labs.thread;
 
-import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadLocalRandom;
@@ -19,9 +18,10 @@ public class ProducerConsumerTest {
         
         producer.start();
         consumer.start();
-        
-        producer.join();
-        consumer.join();
+
+        Thread.sleep(ThreadLocalRandom.current().nextLong(2_0000));
+        producer.interrupt();
+        consumer.interrupt();
     }
     
 }
