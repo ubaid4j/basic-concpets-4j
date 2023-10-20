@@ -21,23 +21,33 @@ public class DifferenceBetweenFileInputStreamAndFileReaderTest {
             byte[] bytes = fileInputStream.readAllBytes();
             log.debug("file: {}", BINARY_FILE_PATH);
             log.debug("Bytes: {}", bytes);
+            log.debug("Text: {}", new String(bytes));
         }
 
         try (FileInputStream fileInputStream = new FileInputStream(TEXT_FILE_PATH)) {
             byte[] bytes = fileInputStream.readAllBytes();
-            log.debug("file: {}", BINARY_FILE_PATH);
+            log.debug("file: {}", TEXT_FILE_PATH);
             log.debug("Bytes: {}", bytes);
+            log.debug("Text: {}", new String(bytes));
             
             String text = new String(bytes);
             Assertions.assertEquals("Hello World", text, "Contents of text file should equal to Hello World");
         }
     }
-    
-    // TODO start working here
+
     @Test
-    // File Reader
-    void fileReaderOnlyReadTextFile() throws Exception {
-        try (FileReader fileReader = new FileReader(BINARY_FILE_PATH)) {
+    void fileReaderIsUsedToReadCharsFromTextFiles() throws Exception {
+        try (FileReader fileReader = new FileReader(TEXT_FILE_PATH)) {
+            StringBuilder builder = new StringBuilder();
+            
+            int character = fileReader.read();
+            while (character != -1) {
+                builder.append((char) character);
+                character = fileReader.read();
+            }
+            
+            Assertions.assertEquals(builder.toString(), "Hello World", "should equal to Hello world");
+            
         }
     }
     
