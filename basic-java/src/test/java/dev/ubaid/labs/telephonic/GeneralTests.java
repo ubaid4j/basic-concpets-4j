@@ -2,6 +2,8 @@ package dev.ubaid.labs.telephonic;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -64,5 +66,56 @@ public class GeneralTests {
             result = result * i;
         }
         return result;
+    }
+    
+    @Test
+    void arrOfBytesToArrayOfCharConversion() {
+        byte[] bytes = new byte[]  { 72, 101, 108, 108, 111 }; // "Hello" in ASCII encoding
+        log.debug("Bytes: {}", bytes);
+        String str = new String(bytes, StandardCharsets.UTF_8);
+        log.debug("string: {}", str);
+        char[] charArr = str.toCharArray();
+        log.debug("chars: {}", charArr);
+        
+        char[] newCharArr = new char[bytes.length];
+        int index = 0;
+        for (byte b : bytes) {
+            newCharArr[index++]= (char) b;
+        }
+        log.debug("char array by casting: {}", newCharArr);
+    }
+    
+    @Test
+    void returnStatementInFinallyClause() {
+        String result = getResult(true);
+        Assertions.assertEquals("finally", result, "Will be returned from finally block");
+        
+        result = getResult(false);
+        Assertions.assertEquals("finally", result, "Will be returned from finally block");
+        
+        result = getResult();
+        Assertions.assertEquals("finally", result, "Will be returned from finally block");
+    }
+    
+    static String getResult(boolean throwException) {
+        try {
+            if (throwException) throw new RuntimeException("I am not feeling good");
+            return "normal";
+        } catch (Exception exp) {
+            log.error("Exp: ", exp);
+            throw new RuntimeException(exp);
+        } finally {
+            log.debug("Returning from finally");
+            return "finally";
+        }
+    }
+    
+    static String getResult() {
+        try {
+            throw new RuntimeException();
+        } finally {
+            log.debug("Returning from finally");
+            return "finally";
+        }
     }
 }
