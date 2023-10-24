@@ -50,6 +50,18 @@ public class ListTest {
         Assertions.assertEquals(3, middle.data);
 
     }
+
+    @Test
+    void findTheMiddleElement2() {
+        LinkedList<Integer> list = new LinkedList<>();
+        list.push(1);
+        list.push(2);
+        list.push(3);
+        
+        Node<Integer> middle = list.findMiddle();
+        
+        Assertions.assertEquals(2, middle.data);
+    }
     
     @Test
     void sortArrayListInDescendingOrder() {

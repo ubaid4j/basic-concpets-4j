@@ -113,6 +113,14 @@ public class GeneralTest {
         }
     }
     
+    @Test
+    void differenceBetweenCallingStartAndRunMethodOfThread() {
+        Legacy legacy = new Legacy();
+        legacy.start();
+        
+        legacy.run();
+    }
+    
 }
 
 @Slf4j

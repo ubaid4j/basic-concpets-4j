@@ -59,6 +59,11 @@ public class GeneralTests {
         Assertions.assertEquals(120, factorial(5));
     }
     
+    @Test
+    void factorial2() {
+        Assertions.assertEquals(2, factorial(2));
+    }
+    
     static long factorial(int number) {
         //5! = 5*4*3*2*1
         long result = 1;
