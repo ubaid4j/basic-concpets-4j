@@ -10,7 +10,50 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 @Slf4j
-public class CyclicBarrierAndCountDownLatch {
+public class CyclicBarrierAndCountDownLatchTest {
+
+    @Test
+    @SneakyThrows
+    void countDownLatchTest() {
+        CountDownLatch latch = new CountDownLatch(3);
+
+        Thread t1 = new SimpleThread(latch);
+        Thread t2 = new SimpleThread(latch);
+        Thread t3 = new SimpleThread(latch);
+
+        log.debug("starting t1, t2, t3 to do the work");
+        log.debug("and waiting to finish their work");
+
+        t1.start();
+        t2.start();
+        t3.start();
+
+        latch.await();
+        log.debug("t1, t2, t3 are finished. exiting");
+    }
+
+    @Test
+    @SneakyThrows
+    void cyclicBarrierTest() {
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(3);
+        Thread t1 = new SimpleThread2(cyclicBarrier);
+        Thread t2 = new SimpleThread2(cyclicBarrier);
+        Thread t3 = new SimpleThread2(cyclicBarrier);
+
+        log.debug("starting t1, t2, t3 to do the work");
+        log.debug("and waiting to finish their work");
+
+        t1.start();
+        t2.start();
+        t3.start();
+
+        t1.join();
+        t2.join();
+        t3.join();
+        log.debug("t1, t2, t3 are finished. exiting");
+
+    }
+
 
     @SneakyThrows
     @Test
@@ -111,6 +154,44 @@ class AwesomeThread extends Thread {
                 log.debug("Bye");
                 shouldRun = false;
             }
+        }
+    }
+}
+
+@Slf4j
+@AllArgsConstructor
+class SimpleThread extends Thread {
+    
+    private final CountDownLatch latch;
+    
+    @Override
+    public void run() {
+        try {
+            log.debug("starting sub task work");
+            Thread.sleep(ThreadLocalRandom.current().nextLong(3_000));
+            log.debug("sub task work completed");
+            latch.countDown();
+        } catch (Exception exp) {
+            throw new RuntimeException(exp);
+        }
+    }
+}
+
+@Slf4j
+@AllArgsConstructor
+class SimpleThread2 extends Thread {
+    
+    private final CyclicBarrier cyclicBarrier;
+
+    @Override
+    public void run() {
+        try {
+            log.debug("starting sub task work");
+            Thread.sleep(ThreadLocalRandom.current().nextLong(3_000));
+            log.debug("sub task completed");
+            cyclicBarrier.await();
+        } catch (Exception exp) {
+            throw new RuntimeException(exp);
         }
     }
 }
