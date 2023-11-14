@@ -1,5 +1,6 @@
 package dev.ubaid.labs.collection;
 
+import java.util.ArrayDeque;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 import java.util.Queue;
@@ -17,5 +18,18 @@ public class QueueTest {
         queue.remove();
         Assertions.assertDoesNotThrow(queue::poll);
         Assertions.assertThrows(NoSuchElementException.class, queue::remove);
+    }
+    
+    @Test
+    void whatIsHeaderInQueue() {
+        Queue<String> q1 = new ArrayDeque<>();
+
+        q1.add("Head");
+
+        q1.add("Tail");
+        
+        log.debug("{}", q1);
+        
+        Assertions.assertEquals("Head", q1.poll());
     }
 }
