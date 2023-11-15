@@ -3,7 +3,10 @@ package dev.ubaid.labs.telephonic;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -122,5 +125,31 @@ public class GeneralTests {
             log.debug("Returning from finally");
             return "finally";
         }
+    }
+    
+    @Getter
+    @EqualsAndHashCode
+    static class Detail {
+        private final String emailAddress;
+
+        public Detail(String emailAddress) {
+            this.emailAddress = emailAddress;
+        }
+
+    }
+    
+    record Key(String name, Integer age, Detail detail) {};
+    
+    @Test
+    void customObjectAsKeyOfMap() {
+        Key key1 = new Key("ubaid", 26, new Detail("ubaid4j@gmail.com"));
+
+        Map<Key, String> map = Map.of(key1, "SWE");
+        
+        Key ubaid = new Key("ubaid", 26, new Detail("ubaid4j@gmail.com"));
+        
+        String profession = map.get(ubaid);
+        
+        Assertions.assertEquals("SWE", profession );
     }
 }
