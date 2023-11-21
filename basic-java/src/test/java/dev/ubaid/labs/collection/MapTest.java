@@ -5,6 +5,7 @@ import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
@@ -38,8 +39,43 @@ public class MapTest {
                     syncMap.put("a", "aaaa");
                 }
             }
-            log.debug("Resultant Map: {}", syncMap);
         });
+        log.debug("Resultant Map: {}", syncMap);
+    }
+    
+    @Test
+    void explicitSynchronizationOnSynchronizeMapToPreventConcurrentModificationException() {
+        Map<String, String> syncMap = Collections.synchronizedMap(new HashMap<>());
+
+        syncMap.put("a", "aa");
+        syncMap.put("b", "bb");
+        syncMap.put("c", "cc");
+
+        
+
+        Assertions.assertDoesNotThrow(() -> {
+            log.debug("Map: {}", syncMap);
+            Set<Map.Entry<String, String>> entryset = syncMap.entrySet();
+
+            synchronized (syncMap) {
+                Iterator<Map.Entry<String, String>> iterator = entryset.iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, String> entry = iterator.next();
+                    try {
+                        Thread.sleep(ThreadLocalRandom.current().nextLong(5) * 1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    if (Objects.equals("b", entry.getKey()) && Objects.equals("bb", entry.getValue())) {
+                        iterator.remove();
+                    }
+                }
+            }
+            MapAdder adder = new MapAdder(syncMap);
+            adder.start();
+            adder.join();
+        });
+        log.debug("Resultant Map: {}", syncMap);
     }
     
     @Test
