@@ -201,16 +201,6 @@ public class CollectorTest {
         Assertions.assertEquals(maxEntry.getValue(), 4);
         Assertions.assertEquals(maxEntry.getKey(), 3);
         
-        //reduce generics
-        record NumberOfLength(int length, long number) {
-            static NumberOfLength fromEntry(Map.Entry<Integer, Long> entry) {
-                return new NumberOfLength(entry.getKey(), entry.getValue());
-            }
-            
-            static Comparator<NumberOfLength> comparingByNumber() {
-                return Comparator.comparing(NumberOfLength::number);
-            }
-        }
         
         NumberOfLength numberOfLength = histogram
                 .entrySet()
@@ -224,11 +214,22 @@ public class CollectorTest {
         Assertions.assertEquals(new NumberOfLength(3, 4), numberOfLength);
         
     }
-    
+
+    //reduce generics
+    record NumberOfLength(int length, long number) {
+        static NumberOfLength fromEntry(Map.Entry<Integer, Long> entry) {
+            return new NumberOfLength(entry.getKey(), entry.getValue());
+        }
+
+        static Comparator<NumberOfLength> comparingByNumber() {
+            return Comparator.comparing(NumberOfLength::number);
+        }
+    }
+
     @Test
     void extractingAmbiguousMax() {
         Collection<String> strings = List.of(
-                "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"
+                "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"
         );
         print("raw list: ", strings);
 
@@ -237,6 +238,65 @@ public class CollectorTest {
                 .collect(Collectors.groupingBy(String::length, Collectors.counting()));
         
         print("histogram: ", histogram);
+        /*{
+            "3" : 3,
+            "4" : 3,
+            "5" : 3,
+            "6" : 2
+          }
+        */
+        
+        Map<Long, List<NumberOfLength>> groupedByNumberOfLength = 
+                histogram
+                        .entrySet()
+                        .stream()
+                        .map(NumberOfLength::fromEntry)
+                        .collect(Collectors.groupingBy(NumberOfLength::number));
+        
+        print("grouped by number of length: ", groupedByNumberOfLength);
+        /*{
+          "2" : [ {
+            "length" : 6,
+            "number" : 2
+          } ],
+          "3" : [ {
+            "length" : 3,
+            "number" : 3
+          }, {
+            "length" : 4,
+            "number" : 3
+          }, {
+            "length" : 5,
+            "number" : 3
+          } ]
+        }*/
+        
+        //we need max number of times of occurrence of length of words
+        //that is 3 but there are three times 3
+        //we need 3 -> [3,4,5] instead of just 3
+        Map<Long, List<Integer>> groupedByNumberOfLengthEnhanced =
+                histogram
+                        .entrySet()
+                        .stream()
+                        .map(NumberOfLength::fromEntry)
+                        .collect(Collectors.groupingBy(NumberOfLength::number, Collectors.mapping(NumberOfLength::length, Collectors.toList())));
+        
+        print("grouped by number of length (eliminating number of length object)", groupedByNumberOfLengthEnhanced);
+        /*{
+            "2" : [ 6 ],
+            "3" : [ 3, 4, 5 ]
+        }*/
+        
+        //we need 3 -> [3,4,5] (the max entry)
+        
+        Map.Entry<Long, List<Integer>> maxEntry = groupedByNumberOfLengthEnhanced.entrySet()
+                .stream()
+                .max(Map.Entry.comparingByKey())
+                .orElseThrow();
+        print("max entry: ", maxEntry);
+        
+        Assertions.assertEquals(3, maxEntry.getKey());
+        Assertions.assertEquals(List.of(3, 4, 5), maxEntry.getValue());
     }
     
     void print(Object obj) {
