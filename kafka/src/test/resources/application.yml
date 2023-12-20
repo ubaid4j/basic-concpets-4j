@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: test
+
+logging:
+  level:
+    org.springframework.kafka.core: TRACE
+    sql: trace
