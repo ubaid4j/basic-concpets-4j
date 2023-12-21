@@ -5,6 +5,7 @@ import static org.awaitility.Awaitility.await;
 import dev.ubaid.kafka.domain.Order;
 import dev.ubaid.kafka.domain.enumumeration.OrderStatus;
 import dev.ubaid.kafka.repo.OrderRepo;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -53,15 +54,17 @@ class KafkaApplicationTests {
         Order order = new Order(null, "o1", UUID.randomUUID().toString(), OrderStatus.CREATED, Instant.now());
         orderRepo.save(order);
         
-//        
-//        kafkaTemplate.send("order-process", orderProcessInfo);
-//        
-//        await()
-//                .pollInterval(Duration.ofSeconds(3))
-//                .atMost(10, TimeUnit.SECONDS)
-//                .untilAsserted(() -> {
-//                    
-//                });
+        kafkaTemplate.send("order-under-process", order);
+        
+        final String orderId = order.getUuid();
+        
+        await()
+                .pollInterval(Duration.ofSeconds(3))
+                .atMost(Duration.ofSeconds(10))
+                .until(() -> {
+                    Order expectedOrder = orderRepo.findById(orderId).orElseThrow();
+                    return expectedOrder.getOrderStatus();
+                }, Matchers.is(OrderStatus.DELIVERED));
     }
 
 }

@@ -1,8 +1,17 @@
 spring:
   profiles:
     active: test
+  kafka:
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: kafka-tests
+      properties:
+        'spring.json.trusted.packages': dev.ubaid.kafka.*
+      auto-offset-reset: earliest
 
 logging:
   level:
-    org.springframework.kafka.core: TRACE
+    org.springframework.kafka.core.KafkaTemplate: TRACE
     sql: trace
