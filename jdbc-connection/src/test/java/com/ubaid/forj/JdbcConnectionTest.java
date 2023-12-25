@@ -82,9 +82,9 @@ public class JdbcConnectionTest {
         String url = postgreSQLContainer.getJdbcUrl() + "&user=" + postgreSQLContainer.getUsername() + "&password=" + postgreSQLContainer.getPassword();
         url = url.replace("loggerLevel=OFF", "loggerLevel=trace");
 
-        // TODO: 5/29/22 set logging for both PGSimpleDataSource and then DriverManager 
+        DriverManager.setLogWriter(new PrintWriter(System.out, true));
+
         PGSimpleDataSource ds = new PGSimpleDataSource();
-        ds.setLogWriter(new PrintWriter(System.out, true));
         ds.setUrl(url);
         Connection connection = ds.getConnection();
         assertNotNull(connection, "connection should not null");
