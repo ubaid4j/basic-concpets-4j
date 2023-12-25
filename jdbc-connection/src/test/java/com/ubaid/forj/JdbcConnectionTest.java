@@ -13,13 +13,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.sql.DataSource;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -28,6 +28,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public class JdbcConnectionTest {
 
     private final static Logger logger = LoggerFactory.getLogger(JdbcConnectionTest.class);
+
+    static {
+        SLF4JBridgeHandler.install();
+    }
     
     @Container
     private final static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:latest");

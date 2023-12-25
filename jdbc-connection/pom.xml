@@ -9,16 +9,16 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>20</maven.compiler.source>
-        <maven.compiler.target>20</maven.compiler.target>
-        <postgres.version>42.6.0</postgres.version>
-        <hikaricp.version>5.0.1</hikaricp.version>
-        <commons-dbcp2.version>2.9.0</commons-dbcp2.version>
-        <junit-jupitor.version>5.10.0</junit-jupitor.version>
-        <test-containers.version>1.18.3</test-containers.version>
-        <sl4j-api.version>2.0.7</sl4j-api.version>
-        <logback-classic.version>1.4.11</logback-classic.version>
-        <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <postgres.version>42.7.1</postgres.version>
+        <hikaricp.version>5.1.0</hikaricp.version>
+        <commons-dbcp2.version>2.11.0</commons-dbcp2.version>
+        <junit-jupitor.version>5.10.1</junit-jupitor.version>
+        <test-containers.version>1.19.3</test-containers.version>
+        <sl4j.version>2.0.9</sl4j.version>
+        <logback-classic.version>1.4.14</logback-classic.version>
+        <maven-surefire-plugin.version>3.2.3</maven-surefire-plugin.version>
     </properties>
     
     <dependencies>
@@ -68,9 +68,13 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${sl4j-api.version}</version>
+            <version>${sl4j.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>${sl4j.version}</version>
+        </dependency>
         
         <dependency>
             <groupId>ch.qos.logback</groupId>
