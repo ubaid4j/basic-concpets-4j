@@ -1,5 +1,6 @@
 package com.ubaid.forj;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -19,13 +20,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BatchingStatementsTest {
     
     private final static Logger log = LoggerFactory.getLogger(BatchingStatementsTest.class);
+    private final static Random random = ThreadLocalRandom.current();
     
     
     @Container
@@ -66,6 +69,16 @@ public class BatchingStatementsTest {
         """);
         
         createPostTable.executeUpdate();
+        
+        PreparedStatement postSeq = connection.prepareStatement("""
+            CREATE SEQUENCE post_seq
+            AS int
+            INCREMENT BY 500
+            MINVALUE 0
+            START WITH 1
+            OWNED BY post.id;
+        """);
+        postSeq.execute();
         
         
         PreparedStatement createPostCommentTable = connection.prepareStatement("""
@@ -113,12 +126,12 @@ public class BatchingStatementsTest {
         log.info("\n\n--------------------------------Starting----------------------------------\n\n");
         
         statement.addBatch("""
-            INSERT into post(title, version, id) VALUES ('Post No 1', 0, default);
+            INSERT into post(title, version, id) VALUES ('Post No 1', 0, 564);
         """);
         
         statement.addBatch("""
             INSERT INTO post_comment(post_id, review, version, id) 
-            VALUES (1, 'post comment 1.1', 0, default);
+            VALUES (564, 'post comment 1.1', 0, default);
         """);
         
         int[] updateCounts = statement.executeBatch();
@@ -127,5 +140,78 @@ public class BatchingStatementsTest {
         
         Assertions.assertArrayEquals(new int[] {1, 1}, updateCounts, "should be {1, 1}");
     }
+
+    @Test
+    void addPostAndCommentUsingBatchWithPreparedStatement() throws SQLException {
+        Connection connection = DriverManager.getConnection(dbURL);
+        PreparedStatement postStatement = connection.prepareStatement("""
+            INSERT INTO post(title, version, id) VALUES (?, ?, ?);
+        """);
+        
+        log.info("\n\n--------------------------------Starting----------------------------------\n\n");
+
+        postStatement.setString(1, "Post no 1");
+        postStatement.setInt(2, 0);
+        postStatement.setInt(3, random.nextInt());
+        postStatement.addBatch();
+        
+        postStatement.setString(1, "Post no 2");
+        postStatement.setInt(2, 0);
+        postStatement.setInt(3, random.nextInt());
+        postStatement.addBatch();
+        
+        int[] updateCounts = postStatement.executeBatch();
+        Assertions.assertArrayEquals(new int[] {1, 1}, updateCounts, "update count should be {1, 1}");
+        
+        
+        PreparedStatement deletePost = connection.prepareStatement("""
+            DELETE FROM post WHERE version=0;
+        """);
+
+        log.info("\n\n--------------------------------deleting post----------------------------------\n\n");
+        int rowsAffected = deletePost.executeUpdate();
+        Assertions.assertEquals(2, rowsAffected, "two rows should be deleted");
+    }
     
+    @Test
+    void addPostWithIdFromSeq() throws SQLException {
+        Connection connection = DriverManager.getConnection(dbURL);
+        
+        PreparedStatement getPostId = connection.prepareStatement("SELECT nextval('post_seq')");
+        
+        
+        PreparedStatement postStatement = connection.prepareStatement("""
+            INSERT INTO post(id, title, version) VALUES (?, ?, ?);
+        """);
+        
+        log("starting");
+        ResultSet postIdResultSet = getPostId.executeQuery();
+        postIdResultSet.next();
+        int postId = postIdResultSet.getInt(1);
+        log.info("postId: {}", postId);
+        
+        postStatement.setInt(1, postId);
+        postStatement.setString(2, "Post #1");
+        postStatement.setInt(3, 0);
+        
+        postStatement.executeUpdate();
+    }
+    
+    
+    @AfterEach
+    void afterEach() throws SQLException {
+        log("After Each starts");
+        Connection connection = DriverManager.getConnection(dbURL);
+        PreparedStatement deletePostComment = connection.prepareStatement("TRUNCATE post_comment");
+        deletePostComment.execute();
+        
+        PreparedStatement deletePost = connection.prepareStatement("TRUNCATE post CASCADE");
+        deletePost.execute();
+        
+        log("After Each ends");
+    }
+    
+    void log(String info) {
+        log.info("\n\n--------------------------------{}----------------------------------\n\n", info);
+    }
 }
