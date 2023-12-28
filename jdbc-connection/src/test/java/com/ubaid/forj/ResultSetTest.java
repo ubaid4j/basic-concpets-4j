@@ -1,5 +1,6 @@
 package com.ubaid.forj;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -113,5 +114,30 @@ public class ResultSetTest {
             posts.add(Post.from(resultSet));            
         }
         log.info("all posts: {}", posts);
+    }
+    
+    @Test
+    void testResultSetSize() throws Exception {
+        PreparedStatement getFirst2Posts = connection.prepareStatement("""
+            SELECT * FROM post ORDER BY id DESC LIMIT 2;
+        """);
+        
+        ResultSet resultSet = getFirst2Posts.executeQuery();
+        
+        List<Post> posts = new ArrayList<>();
+        while(resultSet.next()) {
+            posts.add(Post.from(resultSet));
+        }
+        
+        Assertions.assertEquals(2, posts.size(), "size should be two");
+        Assertions.assertEquals(new Post("post number 1000", 0, 1000), posts.stream().findFirst().orElseThrow(), "Should get the latest post");
+        
+        log.info("all posts: {}", posts);
+        
+    }
+    
+    @AfterEach
+    void afterEach() throws Exception {
+        connection.setAutoCommit(true);
     }
 }
