@@ -9,11 +9,11 @@
     <properties>
         <java.version>21</java.version>
         <junit.version>5.10.1</junit.version>
-        <logback.version>1.4.11</logback.version>
+        <logback.version>1.4.14</logback.version>
         <lombok.version>1.18.30</lombok.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <maven.compiler.version>3.11.0</maven.compiler.version>
+        <maven.compiler.version>3.12.1</maven.compiler.version>
         <maven.sort.plugin>3.3.0</maven.sort.plugin>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <surefire.maven.plugin.version>3.2.2</surefire.maven.plugin.version>
