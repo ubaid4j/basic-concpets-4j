@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.IntBinaryOperator;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -106,5 +108,25 @@ public class ReducingStreamTest {
         Optional<Integer> max = ints.reduce(Integer::max);
         
         Assertions.assertEquals(8, max.orElseThrow());
+    }
+    
+    @Test
+    void reducingWithCombinerAndAccumulator() {
+        Supplier<Stream<String>> strings = () -> Stream.of("one", "two", "three", "four");
+        
+        //we need total length of this stream of string
+        BiFunction<Integer, String, Integer> accumulator = (partialSum, string) -> partialSum + string.length();
+        BinaryOperator<Integer> sum = Integer::sum;
+
+        int result = strings.get().reduce(0, accumulator, sum);
+        
+        Assertions.assertEquals(15, result);
+        
+        //we can use explicit map as well
+        int resultWithExplicitMap = strings.get()
+                .map(String::length)
+                .reduce(0, Integer::sum);
+        
+        Assertions.assertEquals(15, resultWithExplicitMap);
     }
 }
