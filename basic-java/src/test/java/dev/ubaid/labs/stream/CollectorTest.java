@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -16,6 +17,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Slf4j
 public class CollectorTest {
@@ -85,6 +87,17 @@ public class CollectorTest {
     }
     
     @Test
+    void joinTest2() {
+        String result = IntStream.range(0, 2)
+                .boxed()
+                .map(Object::toString)
+                .collect(Collectors.joining(",", "{", "}"));
+        
+        String expectedResult = "{0,1}";
+        Assertions.assertEquals(expectedResult, result);
+    }
+    
+    @Test
     void listToMapTest() {
         Collection<String> strings = List.of(
                 "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"
@@ -95,6 +108,16 @@ public class CollectorTest {
                 .collect(Collectors.partitioningBy(s -> s.length() > 4));
         
         log.debug("map: {}", map);
+    }
+    
+    @Test
+    void partition() {
+        Stream<Integer> stream = Stream.of(1, 2, 3, 4, 5);
+        Map<Boolean, List<Integer>> map = stream.collect(Collectors.partitioningBy(i -> (i%2) == 0));
+        List<Integer> even = map.get(true);
+        List<Integer> odd = map.get(false);
+        Assertions.assertEquals(List.of(2, 4), even);
+        Assertions.assertEquals(List.of(1, 3, 5), odd); 
     }
 
     @Test
@@ -120,6 +143,43 @@ public class CollectorTest {
                 .stream()
                 .collect(Collectors.groupingBy(String::length, Collectors.joining(",")));
         print(newMap);
+    }
+    
+    @Test
+    void groupingBy() {
+        List<String> str = List.of("a", "b", "b", "b", "c", "d", "a", "b", "c", "d", "a");
+
+        Map<Long, List<String>> map = str.stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet().stream()
+                .collect(Collectors.groupingBy(Map.Entry::getValue,
+                        Collectors.mapping(Map.Entry::getKey, Collectors.toList())));
+        print(map);
+        Assertions.assertEquals(Map.of(4L, List.of("b"), 3L, List.of("a"), 2L, List.of("c", "d")), map);
+    }
+    
+    @Test
+    void groupingBy2() {
+        enum Status {
+            CREATED,
+            LABELED,
+            READ_FOR_DELIVERY
+        }
+        record Order (Instant dateCreated, Status status) {}
+        
+        //final all orders that are created today and labelled
+        //TODO start from here
+    }
+    
+    @Test
+    void mapping() {
+        List<String> str = List.of("a", "b", "b", "b", "c", "d", "a", "b", "c", "d", "a");
+        Map<String, Long> map = str.stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.mapping(Function.identity(), Collectors.counting())));
+        
+        Assertions.assertEquals(Map.of("a", 3L, "b", 4L, "c", 2L, "d", 2L), map);
+        
+        print(map);
     }
     
     @Test
