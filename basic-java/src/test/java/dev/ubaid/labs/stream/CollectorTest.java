@@ -3,17 +3,27 @@ package dev.ubaid.labs.stream;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -27,6 +37,7 @@ public class CollectorTest {
     
     static {
         mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.registerModule(new JavaTimeModule());
     }
 
 
@@ -163,12 +174,27 @@ public class CollectorTest {
         enum Status {
             CREATED,
             LABELED,
-            READ_FOR_DELIVERY
+            READY_FOR_DELIVERY
         }
-        record Order (Instant dateCreated, Status status) {}
+        record Order (UUID uuid, Instant dateCreated, Status status) {}
+     
+        List<Order> orders = List.of(
+                new Order(UUID.randomUUID(), Instant.now().minus(1, ChronoUnit.DAYS), Status.CREATED),
+                new Order(UUID.randomUUID(), Instant.now().minus(2, ChronoUnit.DAYS), Status.READY_FOR_DELIVERY),
+                new Order(UUID.randomUUID(), Instant.now(), Status.CREATED),
+                new Order(UUID.randomUUID(), Instant.now(), Status.LABELED)
+        );
+
+        //date - orders count
+        Map<LocalDate, Long> map = orders.stream()
+                .collect(Collectors.groupingBy(order -> LocalDate.ofInstant(order.dateCreated, ZoneId.of("UTC")), Collectors.counting()));
         
-        //final all orders that are created today and labelled
-        //TODO start from here
+        print(map);
+        
+        LocalDate today = Instant.now().atOffset(ZoneOffset.UTC).toLocalDate();
+        long orderCounts = map.get(today);
+        Assertions.assertEquals(2, orderCounts);
+        
     }
     
     @Test
@@ -199,6 +225,8 @@ public class CollectorTest {
         print(map);
     }
     
+    
+    
     @Test
     void testUserCache() {
         record User(Integer id, String username) {}
@@ -223,6 +251,31 @@ public class CollectorTest {
                 .collect(Collectors.toMap(toUserId, Function.identity()));
         
         print(userMap);
+    }
+    
+    @Test
+    void toMap() {
+        record User(UUID uuid, String name, Integer age) {}
+        
+        List<User> users = List.of(
+                new User(UUID.randomUUID(), "ubaid", 26),
+                new User(UUID.randomUUID(), "attiq", 23),
+                new User(UUID.randomUUID(), "ali", 26)
+        );
+
+        BinaryOperator<String> mergeNames = new BinaryOperator<String>() {
+            @Override
+            public String apply(String s, String s2) {
+                return STR."\{s},\{s2}";
+            }
+        };
+        
+        var map = users.stream()
+                .collect(Collectors.toMap(u -> u.age, u -> u.name, mergeNames));
+        
+        print(map);
+        
+        
     }
     
     @Test
@@ -285,7 +338,7 @@ public class CollectorTest {
             return Comparator.comparing(NumberOfLength::number);
         }
     }
-
+    
     @Test
     void extractingAmbiguousMax() {
         Collection<String> strings = List.of(
@@ -358,6 +411,38 @@ public class CollectorTest {
         Assertions.assertEquals(3, maxEntry.getKey());
         Assertions.assertEquals(List.of(3, 4, 5), maxEntry.getValue());
     }
+    
+    @Test
+    @DisplayName(value = "Find character occurred maximum in given list")
+    void maxValueFromMap() {
+        List<String> str = List.of("a", "b", "b", "b", "c", "d", "a", "b", "c", "d", "a");
+
+        Map<Long, String> result = str.stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey, (k1, k2) -> STR."\{k1}.\{k2}"));
+
+        print(result);
+
+        var maxOccurredCharacterEntry = result
+                .entrySet()
+                .stream().max(Map.Entry.comparingByKey())
+                .orElseThrow();
+        
+        Assertions.assertEquals("b", maxOccurredCharacterEntry.getValue());
+        
+        //second max occurred element
+        result.remove(maxOccurredCharacterEntry.getKey());
+        
+        var secondMaxOccurredEntry = result
+                .entrySet()
+                .stream().max(Map.Entry.comparingByKey())
+                .orElseThrow();
+        
+        Assertions.assertEquals("a", secondMaxOccurredEntry.getValue());
+    }
+    
     
     void print(Object obj) {
         try {
