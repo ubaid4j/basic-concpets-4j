@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NavigableSet;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -102,6 +106,52 @@ public class SetTest {
         log.debug("Sorted Books by Ascending Order: {}", books);
 
         Assertions.assertEquals(b3, books.get(0));
+    }
+    
+    @Test
+    void noOrderMaintainBySet() {
+        List<String> strings = List.of("one", "two", "three", "four", "five");
+        Set<String> set = new HashSet<>(strings);
+        
+        log.info("{}", set);
+        
+        Assertions.assertNotEquals(strings, List.copyOf(set));
+    }
+    
+    @Test
+    void sortedSet() {
+        SortedSet<String> strings = new TreeSet<>(Set.of("b", "d", "c", "a"));
+        
+        log.info("set: {}", strings);
+        
+        Assertions.assertEquals(Set.of("a", "b", "c", "d"), Set.copyOf(strings));
+        
+        SortedSet<String> c = strings.subSet("bc", "d");
+        Assertions.assertEquals(Set.of("c"), c);
+        
+        SortedSet<String> a = strings.headSet("b");
+        Assertions.assertEquals(Set.of("a"), a);
+        
+        SortedSet<String> d = strings.tailSet("d");
+        Assertions.assertEquals(Set.of("d"), d);
+    }
+    
+    @Test
+    void navigableSet() {
+        NavigableSet<Double> numbers = new TreeSet<>(Set.of(5.0, 1.0, 3.0 ,2.0, 4.0, 3.8, 4.1));
+        Assertions.assertEquals(List.of(1.0, 2.0, 3.0, 3.8, 4.0, 4.1 ,5.0), List.copyOf(numbers));
+        
+        Double three = numbers.floor(3.7);
+        Assertions.assertEquals(three, 3.0);
+        
+        Double four = numbers.ceiling(3.9);
+        Assertions.assertEquals(four, 4.0);
+        
+        Double fourPointOne = numbers.lower(5.0);
+        Assertions.assertEquals(fourPointOne, 4.1);
+        
+        Double threePointEight = numbers.higher(3.0);
+        Assertions.assertEquals(threePointEight, 3.8);
     }
 }
 

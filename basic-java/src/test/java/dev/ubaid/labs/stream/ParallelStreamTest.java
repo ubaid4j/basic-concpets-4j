@@ -26,9 +26,14 @@ public class ParallelStreamTest {
     @Test
     void inconsistentAdd() {
         List<Integer> ints = new ArrayList<>();
-        IntStream.range(0, 1_000_000)
-                .parallel()
-                .forEach(ints::add);
+        
+        try {
+            IntStream.range(0, 1_000_000)
+                    .parallel()
+                    .forEach(ints::add);
+        } catch (ArrayIndexOutOfBoundsException exp) {
+            log.error("error", exp);
+        }
         
         log.info("size: {}", ints.size());
     }

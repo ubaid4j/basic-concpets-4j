@@ -32,4 +32,9 @@ public class QueueTest {
         
         Assertions.assertEquals("Head", q1.poll());
     }
+    
+    //TODO Tue Jan 16 9:41:30 AM
+    //queue with array dequeue, linkedList
+    //stack with array dequeue, linkedList
+    //priority queue
 }

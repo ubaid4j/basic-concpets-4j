@@ -73,5 +73,13 @@ public class ListTest {
             log.debug("list after modification: {}", failSafeList);
         });
         
+        Assertions.assertEquals(List.of(11, 12, 13), List.copyOf(failSafeList));
+    }
+    
+    @Test
+    void subListTest() {
+        List<Integer> list = new ArrayList<>(List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+        list.subList(1, 9).clear();
+        Assertions.assertEquals(new ArrayList<>(List.of(1, 10)), list);
     }
 }

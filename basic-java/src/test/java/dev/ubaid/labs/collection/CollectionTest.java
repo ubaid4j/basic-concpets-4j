@@ -6,6 +6,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 @Slf4j
 public class CollectionTest {
@@ -120,5 +126,99 @@ public class CollectionTest {
         s1.clear();
         
         Assertions.assertTrue(s1.isEmpty());
+    }
+    
+    
+    @Test
+    void toArray() {
+        Collection<Integer> ints = List.of(1, 2, 3, 4, 5);
+        
+        Object[] intsArr =  ints.toArray();
+        Assertions.assertArrayEquals(new Integer[] {1, 2, 3, 4, 5}, intsArr);
+        
+        Integer[] intsArr2 = ints.toArray(new Integer[0]);
+        Assertions.assertArrayEquals(new Integer[] {1, 2, 3, 4, 5}, intsArr2);
+        
+        Integer[] intsArr3 = ints.toArray(Integer[]::new);
+        Assertions.assertArrayEquals(new Integer[]{1, 2, 3, 4, 5}, intsArr3);
+    }
+    
+    @Test
+    void removePredicate() {
+
+        Predicate<String> isNull = Objects::isNull;
+        Predicate<String> isEmpty = String::isEmpty;
+        Predicate<String> isNullOrIsEmpty = isNull.or(isEmpty);
+        
+        Collection<String> strings = new ArrayList<>();
+        strings.add("one");
+        strings.add("two");
+        strings.add(null);
+        strings.add("");
+        strings.add("");
+        strings.add("three");
+        strings.add(null);
+        strings.add("four");
+        
+        strings.removeIf(isNullOrIsEmpty);
+        
+        Assertions.assertEquals(List.of("one", "two", "three", "four"), List.copyOf(strings));
+    }
+    
+    @Test
+    void iterator() {
+        Collection<String> strings = new ArrayList<>(List.of("one", "two", "three"));
+        
+        for (String str : strings) {
+            Assertions.assertTrue(strings.contains(str));
+        }
+        
+        
+        for (Iterator<String> iterator = strings.iterator(); iterator.hasNext();) {
+            String name = iterator.next();
+            Assertions.assertTrue(strings.contains(name));
+        }
+        
+        Assertions.assertThrowsExactly(ConcurrentModificationException.class, () -> {
+            for (Iterator<String> iterator = strings.iterator(); iterator.hasNext();) {
+                String name = iterator.next();
+                Assertions.assertTrue(strings.contains(name));
+                strings.remove(name);
+            }
+        });
+    }
+    
+    record Range(int start, int end) implements Iterable<Integer> {
+        @Override
+        public Iterator<Integer> iterator() {
+            return new Iterator<Integer>() {
+                
+                private  int index = start;
+                
+                @Override
+                public boolean hasNext() {
+                    return index < end;
+                }
+
+                @Override
+                public Integer next() {
+                    if (index > end) {
+                        throw new NoSuchElementException(STR."\{index}");
+                    }
+                    int currentIndex = index;
+                    index++;
+                    return currentIndex;
+                }
+            };
+        }
+    }
+    
+    @Test
+    void iterable() {
+        for (int i : new Range(10, 20)) {
+            log.info("i: {}", i);
+            Assertions.assertTrue(i > 9);
+            Assertions.assertTrue(i < 21);
+        }
     }
 }
