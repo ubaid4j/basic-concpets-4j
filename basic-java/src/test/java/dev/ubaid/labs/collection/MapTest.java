@@ -1,9 +1,13 @@
 package dev.ubaid.labs.collection;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -119,6 +123,80 @@ public class MapTest {
         
         printer.join();
         adder.join();
+    }
+    
+    @Test
+    void mapTest() {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        map.put("one", 1);
+        map.put("two", null);
+        map.put("three", 3);
+        map.put("four", null);
+        map.put("five", 5);
+        
+        Assertions.assertThrowsExactly(NullPointerException.class, () -> {
+            for (int value : map.values()) {
+
+            }
+        });
+        
+        for (String key : map.keySet()) {
+            map.putIfAbsent(key, -1);
+        }
+        
+        for (int value : map.values()) {
+            log.info("value: {}", value);
+        }
+    }
+    
+    @Test
+    void mapTest2() {
+        Map<Integer, String> map = new LinkedHashMap<>();
+        
+        map.put(1, "one");
+        map.put(2, "two");
+        map.put(3, "three");
+        map.put(4, "four");
+        map.put(5, "five");
+        map.put(6, "six");
+        map.put(7, "seven");
+        map.put(8, "eight");
+        
+        Set<Integer> keys = map.keySet();
+        log.info("Keys: {}", keys);
+
+        Collection<String> values = map.values();
+        log.info("values: {}", values);
+        
+        Set<Map.Entry<Integer, String>> entries = map.entrySet();
+        log.info("entries: {}", entries);
+        
+    }
+    
+    @Test
+    void computeTest() {
+        Map<Integer, List<String>> ageMap = new LinkedHashMap<>();
+        ageMap.put(26, new ArrayList<>(List.of("ubaid")));
+        ageMap.put(23, new ArrayList<>(List.of("attiq")));
+        
+        log.info("age map: {}", ageMap);
+        
+//        ageMap.compute(26, (key, val) -> List.copyOf(val));
+        
+        ageMap.computeIfAbsent(25, key -> List.of("Ali"));
+
+        log.info("age map: {}", ageMap);
+
+        ageMap.computeIfPresent(26, (key, value) -> List.copyOf(value));
+
+        log.info("age map: {}", ageMap);
+
+        ageMap.computeIfAbsent(27, key -> new ArrayList<>()).add("Shahid");
+        log.info("age map: {}", ageMap);
+
+        ageMap.computeIfAbsent(27, key -> new ArrayList<>()).add("Shahzad");
+        log.info("age map: {}", ageMap);
+
     }
 }
 
