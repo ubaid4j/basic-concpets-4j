@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+
 @Slf4j
 public class MapTest {
 
@@ -181,8 +182,6 @@ public class MapTest {
         
         log.info("age map: {}", ageMap);
         
-//        ageMap.compute(26, (key, val) -> List.copyOf(val));
-        
         ageMap.computeIfAbsent(25, key -> List.of("Ali"));
 
         log.info("age map: {}", ageMap);
@@ -197,6 +196,61 @@ public class MapTest {
         ageMap.computeIfAbsent(27, key -> new ArrayList<>()).add("Shahzad");
         log.info("age map: {}", ageMap);
 
+    }
+    
+    @Test
+    void mergeTest() {
+        List<String> list = List.of("one", "two", "three", "four", "five", "six");
+        
+        //3 -> one,two,six
+        //4 -> four,five
+        //5 -> three
+        
+        Map<Integer, List<String>> map = new HashMap<>();
+        
+        for (String str : list) {
+            Integer length = str.length();
+            map.computeIfAbsent(length, _ -> new ArrayList<>()).add(str);
+            
+        }
+        Map<Integer, List<String>> expectedMap = Map.ofEntries(
+                Map.entry(3, List.of("one", "two", "six")),
+                Map.entry(4, List.of("four", "five")),
+                Map.entry(5, List.of("three"))
+        );
+        
+        Assertions.assertEquals(expectedMap, map);
+        
+        
+        Map<Integer, String> map2 = new HashMap<>();
+        
+        for (String str : list) {
+            Integer length = str.length();
+            map2.merge(length, str, (existingVal, newVal) -> STR."\{existingVal}, \{newVal}");
+        }
+        
+        Map<Integer, String> expectedMap2 = Map.ofEntries(
+                Map.entry(3, "one, two, six"),
+                Map.entry(4, "four, five"),
+                Map.entry(5, "three")
+        );
+        
+        Assertions.assertEquals(expectedMap2, map2);
+     
+        
+        Map<Integer, String> map3 = new HashMap<>();
+        for (String str : list) {
+            Integer length = str.length();
+            map3.compute(length, (key, value) -> {
+                if (Objects.isNull(value)) {
+                    return str;
+                }
+               return STR."\{value}, \{str}";
+            });
+        }
+        
+        Assertions.assertEquals(expectedMap2, map3);
+        
     }
 }
 
