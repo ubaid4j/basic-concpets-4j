@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -99,5 +100,11 @@ public class PathTest {
         Assertions.assertTrue(Files.isSameFile(file1, symlink));
     }
     
-    
+    @Test
+    void directories() {
+        Iterable<Path> dirs = FileSystems.getDefault().getRootDirectories();
+        for (Path name : dirs) {
+            log.info("{}", name);
+        }
+    }
 }
