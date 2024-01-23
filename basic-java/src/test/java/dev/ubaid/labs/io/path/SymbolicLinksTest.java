@@ -14,7 +14,7 @@ import java.util.UUID;
 public class SymbolicLinksTest {
 
     @Test
-    void createSymbolic() throws IOException {
+    void createSymbolic() {
         Path rootPath = Path.of("src", "test", "resources", "paths");
         Path file1 = rootPath.resolve("file1");
 
@@ -34,12 +34,16 @@ public class SymbolicLinksTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            Files.delete(newLink);
+            try {
+                Files.delete(newLink);
+            } catch (IOException exp) {
+                log.error("exception on deleting file: {}", newLink, exp);
+            }
         }
     }
 
     @Test
-    void createHardLink() throws IOException {
+    void createHardLink() {
         Path rootPath = Path.of("src", "test", "resources", "paths");
         Path file1 = rootPath.resolve("file1");
 
@@ -51,7 +55,11 @@ public class SymbolicLinksTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            Files.delete(newLink);
+            try {
+                Files.delete(newLink);
+            } catch (IOException exp) {
+                log.error("exception on deleting file: {}", newLink, exp);
+            }
         }
     }
 }
