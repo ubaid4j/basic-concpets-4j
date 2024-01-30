@@ -24,10 +24,15 @@ public class StreamTest {
     
     @Test
     void intStream() {
-        List<Integer> list = new ArrayList<>(100);
+        List<Integer> list = new ArrayList<>(List.of(1, 2, 3, 4, 5));
         
-        IntStream.range(0, 100).forEach(i -> {
-        });
+        for (int i = 0; i < list.size()/2; i++) {
+            int val = list.get(i);
+            list.set(i, list.get(list.size() - 1 -i));
+            list.set(list.size() - 1 -i, val);
+        }
+
+        System.out.println(list);
     }
     
 }
