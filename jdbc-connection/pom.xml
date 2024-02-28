@@ -11,14 +11,14 @@
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <postgres.version>42.7.1</postgres.version>
+        <postgres.version>42.7.2</postgres.version>
         <hikaricp.version>5.1.0</hikaricp.version>
         <commons-dbcp2.version>2.11.0</commons-dbcp2.version>
-        <junit-jupitor.version>5.10.1</junit-jupitor.version>
-        <test-containers.version>1.19.3</test-containers.version>
-        <sl4j.version>2.0.9</sl4j.version>
-        <logback-classic.version>1.4.14</logback-classic.version>
-        <maven-surefire-plugin.version>3.2.3</maven-surefire-plugin.version>
+        <junit-jupitor.version>5.10.2</junit-jupitor.version>
+        <test-containers.version>1.19.6</test-containers.version>
+        <sl4j.version>2.1.0-alpha1</sl4j.version>
+        <logback-classic.version>1.5.0</logback-classic.version>
+        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
     </properties>
     
     <dependencies>
