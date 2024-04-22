@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!--
+        Added the entity PostComment.
+    -->
+    <changeSet id="20240405102920-1" author="jhipster">
+        <createTable tableName="post_comment">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="uuid" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="review" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="version" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="post_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20240405102920-2" author="jhipster">
+        <addForeignKeyConstraint baseColumnNames="post_id"
+                                 baseTableName="post_comment"
+                                 constraintName="fk_post_comment__post_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="post"
+        />
+    </changeSet>
+
+    <changeSet id="20240405102920-1-data" author="jhipster" context="faker">
+        <loadData
+                file="config/liquibase/fake-data/post_comment.csv"
+                separator=";"
+                tableName="post_comment"
+                usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="uuid" type="string"/>
+            <column name="review" type="string"/>
+            <column name="version" type="numeric"/>
+            <column name="post_id" type="numeric" />
+            <column name="created_by" type="string"/>
+            <column name="created_date" type="datetime"/>
+            <column name="last_modified_by" type="string"/>
+            <column name="last_modified_date" type="datetime"/>
+        </loadData>
+    </changeSet>
+</databaseChangeLog>
