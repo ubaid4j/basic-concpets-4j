@@ -27,3 +27,8 @@ logging:
     org.hibernate.internal.SessionImpl: trace
     org.hibernate.internal.SessionFactoryImpl: trace
     liquibase: info
+    com.zaxxer.hikari: trace
+    java.sql: trace
+    javax.sql: trace
+    org.postgresql: trace
+    
