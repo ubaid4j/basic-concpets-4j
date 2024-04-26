@@ -8,6 +8,7 @@ spring:
     hikari:
       pool-name: Hikari
       auto-commit: false
+    url: jdbc:tc:postgresql:16.2:///testdb
   liquibase:
     contexts: dev, faker
     change-log: classpath:config/liquibase/master.xml

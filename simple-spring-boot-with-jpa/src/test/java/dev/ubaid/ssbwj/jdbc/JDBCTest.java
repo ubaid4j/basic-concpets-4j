@@ -4,10 +4,8 @@ import dev.ubaid.ssbwj.domain.Post;
 import dev.ubaid.ssbwj.domain.PostComment;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -20,21 +18,11 @@ import java.util.Map;
 import java.util.Objects;
 
 @SpringBootTest
-@TestPropertySource(
-        properties = {
-                "spring.datasource.url=jdbc:tc:postgresql:16.2:///testdb"
-        }
-)
 public class JDBCTest {
-
-    static {
-//        SLF4JBridgeHandler.install();
-    }
-
 
     @Autowired
     DataSource ds;
-    
+
     @Test
     void getPosts() throws SQLException {
         String getPostSQL = """
@@ -45,7 +33,7 @@ public class JDBCTest {
                 p.id BETWEEN ? AND ? + 1
                 """;
         PreparedStatement statement = ds.getConnection().prepareStatement(getPostSQL);
-        
+
         final int id = 1;
         statement.setInt(1, id);
         statement.setInt(2, id);
@@ -56,7 +44,7 @@ public class JDBCTest {
         Assertions.assertEquals(1, posts.size());
         Assertions.assertEquals("post1", posts.getFirst().getTitle());
     }
-    
+
     private List<Post> toPosts(ResultSet resultSet) throws SQLException {
         Map<Long, Post> postMap = new LinkedHashMap<>();
         while (resultSet.next()) {
