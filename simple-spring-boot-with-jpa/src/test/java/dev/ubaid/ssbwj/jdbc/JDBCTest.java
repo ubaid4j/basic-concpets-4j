@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -18,6 +19,11 @@ import java.util.Map;
 import java.util.Objects;
 
 @SpringBootTest
+@TestPropertySource(
+        properties = {
+                "spring.datasource.url=jdbc:tc:postgresql:16.2:///testdb"
+        }
+)
 public class JDBCTest {
 
     @Autowired
