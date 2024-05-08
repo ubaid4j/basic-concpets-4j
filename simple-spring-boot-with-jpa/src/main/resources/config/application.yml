@@ -18,6 +18,9 @@ spring:
     hibernate:
       ddl-auto: validate
     open-in-view: false
+    properties:
+      hibernate.format_sql: true
+      hibernate.generate_statistics: true
   docker:
     compose:
       file: simple-spring-boot-with-jpa/compose.yaml
