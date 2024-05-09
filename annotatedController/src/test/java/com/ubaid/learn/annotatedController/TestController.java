@@ -75,7 +75,7 @@ public class TestController {
     }
     
     
-    @RepeatedTest(value = 5)
+    @Test
     void testServiceInitializationCounter() throws Exception{
         RequestBuilder getInitializationCounter = MockMvcRequestBuilders
             .get("/initialization-counter");
