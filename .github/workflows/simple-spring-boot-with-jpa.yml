@@ -21,4 +21,4 @@ jobs:
       - name: Build and Test
         run: |
           cd simple-spring-boot-with-jpa
-          mvn clean test
+          mvn clean verify

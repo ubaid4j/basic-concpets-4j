@@ -3,7 +3,7 @@ name: Maven Build and Test
 on:
   push:
     paths:
-      - 'basic-java/**'
+      - 'HackerRank/**'
 
 jobs:
   build-and-test:
@@ -20,5 +20,5 @@ jobs:
           cache: 'maven'
       - name: Build and Test
         run: |
-          cd basic-java
+          cd HackerRank
           mvn clean verify
