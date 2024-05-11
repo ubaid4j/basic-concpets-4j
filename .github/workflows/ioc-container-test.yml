@@ -1,9 +1,8 @@
-name: Test JDBC connection
-
+name: Test IOC container
 on:
   push:
     paths:
-      - 'jdbc-connection/**'
+      - 'ioc-container/**'
 
 jobs:
   build-and-test:
@@ -20,5 +19,5 @@ jobs:
           cache: 'maven'
       - name: Build and Test
         run: |
-          cd jdbc-connection
+          cd ioc-container
           mvn clean verify

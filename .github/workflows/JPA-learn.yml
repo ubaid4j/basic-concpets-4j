@@ -1,9 +1,9 @@
-name: Test JDBC connection
+name: Test JPA Learn
 
 on:
   push:
     paths:
-      - 'jdbc-connection/**'
+      - 'JPA-learn/**'
 
 jobs:
   build-and-test:
@@ -20,5 +20,5 @@ jobs:
           cache: 'maven'
       - name: Build and Test
         run: |
-          cd jdbc-connection
+          cd JPA-learn
           mvn clean verify
