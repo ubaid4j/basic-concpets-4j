@@ -50,7 +50,7 @@ public final class Period implements Serializable {
         validateDate();
 */
         
-        throw new InvalidObjectException("Proxy required");
+        throw new InvalidObjectException("Proxy required hardcoded exception");
     }
     
     @Serial

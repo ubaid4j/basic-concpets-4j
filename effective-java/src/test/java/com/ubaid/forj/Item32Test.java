@@ -25,7 +25,8 @@ public class Item32Test {
         List<String> list = List.of("list");
         List<String> list2 = List.of("list2");
         List<String> list3 = List.of("list3");
-        dangerous(list, list2, list3);
+        ClassCastException exp = Assertions.assertThrowsExactly(ClassCastException.class, () -> dangerous(list, list2, list3));
+        Assertions.assertTrue(exp.getMessage().contains("class java.lang.Integer cannot be cast to class java.lang.String"));
     }
     
     static <T> T[] toArray(T... args) {

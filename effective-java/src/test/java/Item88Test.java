@@ -2,6 +2,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Date;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class Item88Test {
@@ -23,9 +25,8 @@ public class Item88Test {
     };
     @Test
     void test() {
-        Period period = new Period(new Date(), new Date());
-        Period p = (Period) TestUtil.deserialize(serializedForm);
-        System.out.println(p);
+        IllegalArgumentException exp = Assertions.assertThrowsExactly(IllegalArgumentException.class, () -> TestUtil.deserialize(serializedForm));
+        Assertions.assertEquals("java.io.InvalidObjectException: Proxy required hardcoded exception", exp.getMessage());
     }
     
     

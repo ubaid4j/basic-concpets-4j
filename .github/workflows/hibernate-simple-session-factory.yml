@@ -1,9 +1,9 @@
-name: Test JDBC connection
+name: Test Hibernate simple Session Factory
 
 on:
   push:
     paths:
-      - 'jdbc-connection/**'
+      - 'hibernate-simple-session-factory/**'
 
 jobs:
   build-and-test:
@@ -12,13 +12,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Setup Java 21
+      - name: Setup Java 22
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '22'
           cache: 'maven'
       - name: Build and Test
         run: |
-          cd jdbc-connection
-          mvn clean test
+          cd hibernate-simple-session-factory
+          mvn clean verify
