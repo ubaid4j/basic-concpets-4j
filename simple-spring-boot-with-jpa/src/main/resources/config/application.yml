@@ -21,6 +21,8 @@ spring:
     properties:
       hibernate.format_sql: true
       hibernate.generate_statistics: true
+#      hibernate.connection.release_mode: 
+#      hibernate.stats.factory: 
   docker:
     compose:
       file: simple-spring-boot-with-jpa/compose.yaml

@@ -8,32 +8,35 @@ import javax.sql.DataSource;
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.SessionFactory;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 
 public class DBConfig {
-
+    
+    
     private static EntityManagerFactory entityManagerFactory;
     
-    public static EntityManagerFactory getEntityManagerFactory() {
+    public static EntityManagerFactory getEntityManagerFactory(PostgreSQLContainer<?> postgreSQLContainer) {
         if (Objects.isNull(entityManagerFactory)) {
-            entityManagerFactory = sessionFactory();
+            entityManagerFactory = sessionFactory(postgreSQLContainer);
         }
         return entityManagerFactory;
     }
 
-    private static SessionFactory sessionFactory() {
-        return new LocalSessionFactoryBuilder(dataSource())
-            .setProperty("hibernate.hbm2ddl.auto", "none")
+    private static SessionFactory sessionFactory(PostgreSQLContainer<?> postgreSQLContainer) {
+        return new LocalSessionFactoryBuilder(dataSource(postgreSQLContainer))
+            .setProperty("hibernate.hbm2ddl.auto", "update")
             .addAnnotatedClass(User.class)
             .addPackage("dev.ubaid.labs.domain")
             .buildSessionFactory();
     }
     
-    private static DataSource dataSource() {
+    private static DataSource dataSource(PostgreSQLContainer<?> postgreSQLContainer) {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:postgresql://localhost:5600/test");
+        config.setJdbcUrl(postgreSQLContainer.getJdbcUrl());
         config.setDriverClassName("org.postgresql.Driver");
-        config.setUsername("test");
-        config.setPassword("test");
+        config.setUsername(postgreSQLContainer.getUsername());
+        config.setPassword(postgreSQLContainer.getPassword());
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");

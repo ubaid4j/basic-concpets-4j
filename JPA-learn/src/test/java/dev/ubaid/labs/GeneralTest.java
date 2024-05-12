@@ -23,10 +23,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Slf4j
 @TestInstance(Lifecycle.PER_CLASS)
+@Testcontainers
 public class GeneralTest {
+
+    @Container
+    private final static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:16.3");
     
     EntityManager em;
     Faker faker = new Faker();
@@ -35,7 +42,7 @@ public class GeneralTest {
     
     @BeforeAll
     void setup() {
-        EntityManagerFactory factory = DBConfig.getEntityManagerFactory();
+        EntityManagerFactory factory = DBConfig.getEntityManagerFactory(postgreSQLContainer);
         em = factory.createEntityManager();
         em.getTransaction().begin();
         List<User> users = getUsers();
@@ -126,7 +133,7 @@ public class GeneralTest {
     void destroy() {
         em.getTransaction().begin();
         em.createQuery("DELETE FROM User u WHERE u.id > 0").executeUpdate();
-        em.createNativeQuery("alter sequence jpa_user_seq restart").executeUpdate();
+//        em.createNativeQuery("alter sequence jpa_user_seq restart").executeUpdate();
         em.getTransaction().commit();
         em.close();
     }
