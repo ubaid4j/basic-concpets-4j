@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 @SpringBootTest
 @TestPropertySource(
         properties = {
-               "spring.datasource.url=jdbc:tc:postgresql:16.1:///testdb",
+               "spring.datasource.url=jdbc:tc:postgresql:16.3:///testdb",
                 "spring.jpa.generate-ddl=true"
         }
 )
@@ -35,7 +35,7 @@ class KafkaApplicationTests {
     
     @Container
     static final KafkaContainer kafka = new KafkaContainer(
-            DockerImageName.parse("confluentinc/cp-kafka:7.3.3")
+            DockerImageName.parse("confluentinc/cp-kafka:7.6.1")
     );
     
     @DynamicPropertySource

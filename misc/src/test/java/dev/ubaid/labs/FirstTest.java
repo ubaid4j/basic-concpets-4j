@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import java.io.File;
+import java.net.URL;
 import java.nio.file.Files;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -17,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -169,23 +172,28 @@ public class FirstTest {
     }
 
 
-    private static final String PRIVATE_KEY="/home/ubaid/Downloads/test-20-dec/private_key.pem";
-    private static final String PUBLIC_KEY="/home/ubaid/Downloads/test-20-dec/public_key.pem";
+    private static final String PRIVATE_KEY="/private.pem";
+    private static final String PUBLIC_KEY="/public_key.pem";
     private static final String issuer = "a4a82037-f45c-4889-a042-0d6d5309a0ac";
     private static final String subject = "a4a82037-f45c-4889-a042-0d6d5309a0ac";
     private static final String jwtId = "f9eaafba-2e49-11ea-8880-5ce0c5aee612";
     private static final String audience = "https://np-apigateway.epiccloud.io/v1/gateway/urn:epic:apporchard.curprod/oauth2/token";
-    private static final String expiryDateString = "20/12/2022 22:10:00";
+    private static final String expiryDateString = "20/12/2025 22:10:00";
     private static final String issueDateString = "20/12/2022 21:10:00";
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
 
     @Test
     public void test5() throws Exception {
-        File file = new File(PRIVATE_KEY);
-        RSAPrivateKey rsaPrivateKey = readPrivateKey(file);
-        file = new File(PUBLIC_KEY);
-        RSAPublicKey rsaPublicKey = readPublicKey(file);
+        URL privateKeyURL = this.getClass().getResource(PRIVATE_KEY);
+        Assertions.assertNotNull(privateKeyURL);
+        File privateKeyFile = new File(privateKeyURL.toURI());
+        RSAPrivateKey rsaPrivateKey = readPrivateKey(privateKeyFile);
+        
+        URL publicKeyURL = this.getClass().getResource(PUBLIC_KEY);
+        Assertions.assertNotNull(publicKeyURL);
+        File publicKeyFile = new File(publicKeyURL.toURI());
+        RSAPublicKey rsaPublicKey = readPublicKey(publicKeyFile);
         Algorithm algorithm = Algorithm.RSA256(rsaPublicKey, rsaPrivateKey);
         System.out.println("Algorithm name: " + algorithm.getName());
         String token = JWT.create()
@@ -205,7 +213,7 @@ public class FirstTest {
             .withJWTId(jwtId)
             .build();
         DecodedJWT decodedJWT = verifier.verify(token);
-        System.out.println("verify");
+        System.out.println("verified: " + decodedJWT.getToken());
     }
 
     public static RSAPublicKey readPublicKey(File file) throws Exception {
