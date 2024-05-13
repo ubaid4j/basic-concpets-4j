@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
@@ -14,7 +13,7 @@ public class SpringBeanFactoryUsingXMLTest {
     
     @Test
     public void springBeanFactoryTest() {
-        BeanFactory factory = new XmlBeanFactory(new ClassPathResource("beans.xml"));
+        BeanFactory factory = new ClassPathXmlApplicationContext("beans.xml");
         HelloWorld helloWorld = (HelloWorld) factory.getBean("helloWorld");
         Assertions.assertEquals("Hello World from Spring", helloWorld.toString());
     }

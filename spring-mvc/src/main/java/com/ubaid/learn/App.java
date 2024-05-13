@@ -1,6 +1,6 @@
 package com.ubaid.learn;
 
-import javax.servlet.Filter;
+import jakarta.servlet.Filter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class App extends AbstractAnnotationConfigDispatcherServletInitializer {
