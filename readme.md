@@ -1,7 +1,6 @@
 ### About
-In this repository, I will try to test the basic concept related to Java like JDBC, Spring, Hibernate etc.
-Please refer to each module readme.md file for more detail.
+In this repository, Each subfolder contains tests (i.e. Kafka, JDBC, JPA etc)
 
 ### Requirement
-1. Java 18
+1. Java 22
 2. Maven 3.8.x
