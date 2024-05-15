@@ -7,3 +7,4 @@ services:
       - 'POSTGRES_USER=ubaid'
     ports:
       - '127.0.0.1:5987:5432'
+    command: postgres -c log_statement=all

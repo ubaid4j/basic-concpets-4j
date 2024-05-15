@@ -23,7 +23,7 @@ spring:
     properties:
       hibernate.format_sql: true
       hibernate.generate_statistics: true
-      hibernate.connection.release_mode: after_statement
+      hibernate.connection.release_mode: after_transaction
       hibernate.stats.factory: dev.ubaid.ssbwj.service.stats.hibernate.TransactionStatisticsFactory
   docker:
     compose:
@@ -32,6 +32,7 @@ spring:
 
 logging:
   level:
+    org.hibernate.SQL: debug
     org.springframework.orm.hibernate5: trace
     org.springframework.orm.jpa: trace
     org.hibernate.sql: trace
