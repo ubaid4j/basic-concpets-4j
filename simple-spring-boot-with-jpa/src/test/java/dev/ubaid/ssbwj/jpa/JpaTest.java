@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -45,6 +46,7 @@ public class JpaTest {
     EntityManager entityManager;
     
     @Test
+    @Commit
     void getPosts() {
         final int id = 1;
         List<Post> posts = entityManager.createQuery("""

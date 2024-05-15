@@ -1,3 +1,5 @@
+server:
+  port: 32000
 spring:
   profiles:
     active: dev
@@ -21,8 +23,8 @@ spring:
     properties:
       hibernate.format_sql: true
       hibernate.generate_statistics: true
-#      hibernate.connection.release_mode: 
-#      hibernate.stats.factory: 
+      hibernate.connection.release_mode: after_statement
+      hibernate.stats.factory: dev.ubaid.ssbwj.service.stats.hibernate.TransactionStatisticsFactory
   docker:
     compose:
       file: simple-spring-boot-with-jpa/compose.yaml
