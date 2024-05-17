@@ -25,6 +25,7 @@ spring:
       hibernate.generate_statistics: true
       hibernate.connection.release_mode: after_transaction
       hibernate.stats.factory: dev.ubaid.ssbwj.service.stats.hibernate.TransactionStatisticsFactory
+      hibernate.use_sql_comments: true
   docker:
     compose:
       file: simple-spring-boot-with-jpa/compose.yaml
@@ -41,4 +42,5 @@ logging:
     org.hibernate.engine.transaction: trace
     org.hibernate.internal.SessionImpl: trace
     org.hibernate.internal.SessionFactoryImpl: trace
+    org.hibernate.type.descriptor.sql: trace
     liquibase: debug

@@ -12,13 +12,16 @@ import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Testcontainers
 @SpringBootTest
@@ -46,7 +49,6 @@ public class JpaTest {
     EntityManager entityManager;
     
     @Test
-    @Commit
     void getPosts() {
         final int id = 1;
         List<Post> posts = entityManager.createQuery("""
@@ -63,6 +65,21 @@ public class JpaTest {
         Assertions.assertEquals("post1", posts.getFirst().getTitle());
         Assertions.assertEquals("That is great post", new ArrayList<>(posts.getFirst().getPostComments()).getFirst().getReview());
         Assertions.assertEquals("Post 1 description", posts.getFirst().getPostDetail().getDescription());
+    }
+    
+    @Test
+    @Transactional
+    @Commit
+    void createPost() {
+        Post post = new Post();
+        post.setLastModifiedDate(Instant.now());
+        post.setCreatedDate(Instant.now());
+        post.setLastModifiedBy("system");
+        post.setCreatedBy("system");
+        post.setVersion(1);
+        post.setTitle("Post 2");
+        post.setUuid(UUID.randomUUID().toString());
+        entityManager.persist(post);
     }
     
 }
