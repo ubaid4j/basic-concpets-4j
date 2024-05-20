@@ -1,5 +1,6 @@
 package dev.ubaid.ssbwj.jpa;
 
+import dev.ubaid.ssbwj.domain.Event;
 import dev.ubaid.ssbwj.domain.Post;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
@@ -80,6 +81,15 @@ public class JpaTest {
         post.setTitle("Post 2");
         post.setUuid(UUID.randomUUID().toString());
         entityManager.persist(post);
+    }
+    
+    
+    @Test
+    @Transactional
+    @Commit
+    void createEvent() {
+        Event event = new Event("192.168.0.1");
+        entityManager.persist(event);
     }
     
 }
