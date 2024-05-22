@@ -30,7 +30,7 @@ public class PostDetail  extends AbstractAuditingEntity<Long>{
     
     @JsonIgnoreProperties(value = {"postDetail", "postComments"}, allowSetters = true)
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(unique = true)
     private Post post;
     
     @Override

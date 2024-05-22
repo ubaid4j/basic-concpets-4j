@@ -8,6 +8,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
@@ -49,6 +51,10 @@ public class Post extends AbstractAuditingEntity<Long> {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<PostComment> postComments = new HashSet<>();
+    
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "post_tag", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<Tag> tags = new HashSet<>();
     
 
     @Override
@@ -104,6 +110,18 @@ public class Post extends AbstractAuditingEntity<Long> {
     public void removePostComment(PostComment postComment) {
         postComments.remove(postComment);
         postComment.setPost(null);
+    }
+
+    public void setPostComments(Set<PostComment> postComments) {
+        this.postComments = postComments;
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

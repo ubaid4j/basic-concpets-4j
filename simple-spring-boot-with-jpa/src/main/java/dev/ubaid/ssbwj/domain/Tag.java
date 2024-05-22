@@ -1,41 +1,40 @@
 package dev.ubaid.ssbwj.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table
-public class PostComment extends AbstractAuditingEntity<Long> {
+public class Tag extends AbstractAuditingEntity<Long> {
     
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     private Long id;
 
     @NotNull
-    @Column
+    @Column(nullable = false)
     private String uuid;
     
     @NotNull
-    @Column
-    private String review;
+    @Column(nullable = false)
+    private String name;
     
     @NotNull
-    @Column
+    @Column(nullable = false)
     private Integer version;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = {"postDetail", "postComments"}, allowSetters = true)
-    @JoinColumn
-    private Post post;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "tags")
+    private Set<Post> posts = new HashSet<>();
     
     @Override
     public Long getId() {
@@ -46,36 +45,28 @@ public class PostComment extends AbstractAuditingEntity<Long> {
         this.id = id;
     }
 
-    public String getUuid() {
+    public @NotNull String getUuid() {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
+    public void setUuid(@NotNull String uuid) {
         this.uuid = uuid;
     }
 
-    public String getReview() {
-        return review;
+    public @NotNull String getName() {
+        return name;
     }
 
-    public void setReview(String review) {
-        this.review = review;
+    public void setName(@NotNull String name) {
+        this.name = name;
     }
 
-    public Integer getVersion() {
+    public @NotNull Integer getVersion() {
         return version;
     }
 
-    public void setVersion(Integer version) {
+    public void setVersion(@NotNull Integer version) {
         this.version = version;
-    }
-
-    public Post getPost() {
-        return post;
-    }
-
-    public void setPost(Post post) {
-        this.post = post;
     }
 
     @Override
@@ -83,10 +74,10 @@ public class PostComment extends AbstractAuditingEntity<Long> {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof PostComment)) {
+        if (!(o instanceof Tag)) {
             return false;
         }
-        return getId() != null && getId().equals(((PostComment) o).getId());
+        return getId() != null && getId().equals(((Tag) o).getId());
     }
 
     @Override
@@ -98,11 +89,11 @@ public class PostComment extends AbstractAuditingEntity<Long> {
     // prettier-ignore
     @Override
     public String toString() {
-        return "PostComment{" +
+        return "Tag{" +
                 "id=" + getId() +
                 ", uuid='" + getUuid() + "'" +
-                ", review='" + getReview() + "'" +
-                ", version=" + getVersion() +
+                ", name='" + getName() + "'" +
+                ", version='" + getVersion() + "'" +
                 "}";
     }
 

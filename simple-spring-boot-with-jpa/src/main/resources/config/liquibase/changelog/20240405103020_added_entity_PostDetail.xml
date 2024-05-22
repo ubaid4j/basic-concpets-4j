@@ -19,7 +19,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="post_id" type="bigint">
-                <constraints nullable="false"/>
+                <constraints nullable="false" unique="true"/>
             </column>
             <column name="version" type="integer">
                 <constraints nullable="false" />

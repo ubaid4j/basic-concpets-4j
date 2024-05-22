@@ -15,4 +15,6 @@
     <include file="config/liquibase/changelog/20240405102920_added_entity_PostComment.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20240405103020_added_entity_PostDetail.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20240520073448_added_entity_Event.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20240522071905_added_relation_post_tag.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20240522071906_added_entity_Tag.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>
