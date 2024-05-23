@@ -2,6 +2,7 @@ package dev.ubaid.ssbwj.jpa;
 
 import dev.ubaid.ssbwj.domain.Event;
 import dev.ubaid.ssbwj.domain.Post;
+import dev.ubaid.ssbwj.domain.PostComment;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -81,6 +82,36 @@ public class JpaTest {
         post.setTitle("Post 2");
         post.setUuid(UUID.randomUUID().toString());
         entityManager.persist(post);
+    }
+    
+    
+    @Test
+    @Transactional
+    @Commit
+    void createPostComment() {
+        Post post = new Post();
+        post.setLastModifiedDate(Instant.now());
+        post.setCreatedDate(Instant.now());
+        post.setLastModifiedBy("system");
+        post.setCreatedBy("system");
+        post.setVersion(1);
+        post.setTitle("Post 2");
+        post.setUuid(UUID.randomUUID().toString());
+        
+        post = entityManager.merge(post);
+
+        PostComment comment = new PostComment();
+        comment.setLastModifiedBy("system");
+        comment.setCreatedBy("system");
+        comment.setCreatedDate(Instant.now());
+        comment.setLastModifiedDate(Instant.now());
+        
+        comment.setVersion(1);
+        comment.setUuid(UUID.randomUUID().toString());
+        comment.setReview("fantastic");
+        comment.setPost(post);
+        
+        entityManager.persist(comment);
     }
     
     
