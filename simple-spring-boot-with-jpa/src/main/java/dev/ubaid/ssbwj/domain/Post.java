@@ -1,6 +1,7 @@
 package dev.ubaid.ssbwj.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -48,7 +49,7 @@ public class Post extends AbstractAuditingEntity<Long> {
     private PostDetail postDetail;
 
     @JsonIgnoreProperties(value = {"post"}, allowSetters = true)
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = {CascadeType.PERSIST})
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<PostComment> postComments = new HashSet<>();
     
