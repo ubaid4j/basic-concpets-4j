@@ -5,12 +5,14 @@ import dev.ubaid.ssbwj.domain.PostComment;
 import dev.ubaid.ssbwj.repository.PostCommentRepository;
 import dev.ubaid.ssbwj.repository.PostRepository;
 import jakarta.persistence.EntityManager;
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -100,6 +102,54 @@ public class CascadeTest {
         List<PostComment> postComments = postCommentRepository.findAllByPost(post1);
         Assertions.assertEquals(3, postComments.size());
         
+    }
+
+    @Test
+    @Commit
+    void verifyPostIsNotDeletedDueToChildPostComments() {
+        Post post1 = getPost1();
+        PostComment comment1 = getDefaultComment();
+        PostComment comment2 = getDefaultComment();
+
+        post1.addPostComment(comment1);
+        post1.addPostComment(comment2);
+        
+        postRepository.save(post1);
+
+        List<PostComment> postComments = postCommentRepository.findAllByPost(post1);
+        Assertions.assertEquals(2, postComments.size());
+        
+        DataIntegrityViolationException exp = 
+                Assertions.assertThrowsExactly(DataIntegrityViolationException.class, () -> postRepository.delete(post1));
+
+        ConstraintViolationException foreignKeyConstraintExp = (ConstraintViolationException) exp.getCause();
+        
+        String expectedMessage = "update or delete on table \"post\" violates foreign key constraint \"fk_post_comment__post_id\" on table \"post_comment\"";
+        String actualMessage = foreignKeyConstraintExp.getMessage();
+        
+        Assertions.assertTrue(actualMessage.contains(expectedMessage));
+
+        List<PostComment> comments = postCommentRepository.findAllByPost(post1);
+        Assertions.assertEquals(2, comments.size());
+    }
+    
+    @Test
+    @Commit
+    void verifyDeletePostComment() {
+        Post post1 = getPost1();
+        PostComment comment1 = getDefaultComment();
+        PostComment comment2 = getDefaultComment();
+
+        post1.addPostComment(comment1);
+        post1.addPostComment(comment2);
+        postRepository.save(post1);
+
+        List<PostComment> postComments = postCommentRepository.findAllByPost(post1);
+
+        postCommentRepository.delete(postComments.getLast());
+        
+        List<PostComment> comments = postCommentRepository.findAllByPost(post1);
+        Assertions.assertEquals(1, comments.size());
     }
 
 

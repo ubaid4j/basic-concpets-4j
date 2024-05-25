@@ -34,7 +34,7 @@ public class PostComment extends AbstractAuditingEntity<Long> {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = {"postDetail", "postComments"}, allowSetters = true)
-    @JoinColumn
+    @JoinColumn(insertable = false, updatable = false)
     private Post post;
     
     @Override

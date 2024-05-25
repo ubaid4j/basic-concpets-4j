@@ -2,3 +2,7 @@ logging:
   level:
     org.hibernate.SQL: debug
     'org.springframework.test.context.transaction': trace
+    
+spring:
+  liquibase:
+    contexts: dev
