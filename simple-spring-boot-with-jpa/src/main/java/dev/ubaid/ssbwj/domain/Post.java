@@ -53,7 +53,7 @@ public class Post extends AbstractAuditingEntity<Long> {
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private Set<PostComment> postComments = new HashSet<>();
     
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "post_tag", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
     
@@ -106,6 +106,10 @@ public class Post extends AbstractAuditingEntity<Long> {
     public void addPostComment(PostComment postComment) {
         postComments.add(postComment);
         postComment.setPost(this);
+    }
+    
+    public void addTag(Tag tag) {
+        tags.add(tag);
     }
     
     public void removePostComment(PostComment postComment) {

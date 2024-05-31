@@ -3,8 +3,13 @@ package dev.ubaid.ssbwj.jpa;
 import dev.ubaid.ssbwj.domain.Event;
 import dev.ubaid.ssbwj.domain.Post;
 import dev.ubaid.ssbwj.domain.PostComment;
+import dev.ubaid.ssbwj.domain.Tag;
+import dev.ubaid.ssbwj.repository.PostCommentRepository;
+import dev.ubaid.ssbwj.repository.PostRepository;
 import jakarta.persistence.EntityManager;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +44,11 @@ public class JpaTest {
     private final static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:16.2")
             .withCommand("postgres", "-c", "log_statement=all")
             .withLogConsumer(logConsumer);
-    
+    @Autowired
+    private PostRepository postRepository;
+    @Autowired
+    private PostCommentRepository postCommentRepository;
+
     @DynamicPropertySource
     static void setupPostgresProps(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
@@ -73,32 +82,21 @@ public class JpaTest {
     @Transactional
     @Commit
     void createPost() {
-        Post post = new Post();
-        post.setLastModifiedDate(Instant.now());
-        post.setCreatedDate(Instant.now());
-        post.setLastModifiedBy("system");
-        post.setCreatedBy("system");
-        post.setVersion(1);
-        post.setTitle("Post 2");
-        post.setUuid(UUID.randomUUID().toString());
+        Post post = createNewPost();
         entityManager.persist(post);
+        
+        Post postFromDB = postRepository.findByUuid(post.getUuid()).orElseThrow();
+        Assertions.assertNotNull(postFromDB);
+        
     }
     
     
     @Test
-    @Transactional
     @Commit
     void createPostComment() {
-        Post post = new Post();
-        post.setLastModifiedDate(Instant.now());
-        post.setCreatedDate(Instant.now());
-        post.setLastModifiedBy("system");
-        post.setCreatedBy("system");
-        post.setVersion(1);
-        post.setTitle("Post 2");
-        post.setUuid(UUID.randomUUID().toString());
-        
-        post = entityManager.merge(post);
+        Post post = createNewPost();
+
+        post = postRepository.save(post);
 
         PostComment comment = new PostComment();
         comment.setLastModifiedBy("system");
@@ -111,7 +109,10 @@ public class JpaTest {
         comment.setReview("fantastic");
         comment.setPost(post);
         
-        entityManager.persist(comment);
+        postCommentRepository.save(comment);
+
+        Post postFromDB = postRepository.findByUuid(post.getUuid()).orElseThrow();
+        Assertions.assertNotNull(postFromDB);
     }
     
     
@@ -123,4 +124,40 @@ public class JpaTest {
         entityManager.persist(event);
     }
     
+    //TODO fixme
+    @Test
+    @Commit
+    @Disabled
+    void verifyTagsAreBeingCreated() {
+        Post post = createNewPost();
+        post = postRepository.save(post);
+
+        Tag tag = new Tag();
+        tag.setCreatedBy("system");
+        tag.setCreatedDate(Instant.now());
+        tag.setLastModifiedBy("system");
+        tag.setLastModifiedDate(Instant.now());
+        tag.setUuid(UUID.randomUUID().toString());
+        tag.setName("tag1");
+        tag.setVersion(1);
+        
+        postRepository.save(post);
+        
+        Post postFromDB = postRepository.findByUuid(post.getUuid()).orElseThrow();
+
+        Assertions.assertFalse(postFromDB.getTags().isEmpty());
+    }
+
+    private static @NotNull Post createNewPost() {
+        Post post = new Post();
+        post.setLastModifiedDate(Instant.now());
+        post.setCreatedDate(Instant.now());
+        post.setLastModifiedBy("system");
+        post.setCreatedBy("system");
+        post.setVersion(1);
+        post.setTitle("Post 2");
+        post.setUuid(UUID.randomUUID().toString());
+        return post;
+    }
+
 }
