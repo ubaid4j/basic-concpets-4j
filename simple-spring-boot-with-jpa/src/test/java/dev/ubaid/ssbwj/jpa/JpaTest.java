@@ -124,14 +124,23 @@ public class JpaTest {
         entityManager.persist(event);
     }
     
-    //TODO fixme
     @Test
     @Commit
-    @Disabled
+    @Transactional
     void verifyTagsAreBeingCreated() {
         Post post = createNewPost();
         post = postRepository.save(post);
 
+        Tag tag = createTag();
+        post.addTag(tag);
+        
+        postRepository.save(post);
+        
+        Post postFromDB = postRepository.findByUuid(post.getUuid()).orElseThrow();
+        Assertions.assertFalse(postFromDB.getTags().isEmpty());
+    }
+
+    private static @NotNull Tag createTag() {
         Tag tag = new Tag();
         tag.setCreatedBy("system");
         tag.setCreatedDate(Instant.now());
@@ -140,12 +149,7 @@ public class JpaTest {
         tag.setUuid(UUID.randomUUID().toString());
         tag.setName("tag1");
         tag.setVersion(1);
-        
-        postRepository.save(post);
-        
-        Post postFromDB = postRepository.findByUuid(post.getUuid()).orElseThrow();
-
-        Assertions.assertFalse(postFromDB.getTags().isEmpty());
+        return tag;
     }
 
     private static @NotNull Post createNewPost() {
@@ -155,7 +159,7 @@ public class JpaTest {
         post.setLastModifiedBy("system");
         post.setCreatedBy("system");
         post.setVersion(1);
-        post.setTitle("Post 2");
+        post.setTitle("Post 1");
         post.setUuid(UUID.randomUUID().toString());
         return post;
     }

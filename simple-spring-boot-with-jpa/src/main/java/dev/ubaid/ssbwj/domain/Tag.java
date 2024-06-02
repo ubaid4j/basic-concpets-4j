@@ -69,6 +69,14 @@ public class Tag extends AbstractAuditingEntity<Long> {
         this.version = version;
     }
 
+    public Set<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(Set<Post> posts) {
+        this.posts = posts;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
