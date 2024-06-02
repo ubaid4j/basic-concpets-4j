@@ -5,4 +5,4 @@ logging:
     
 spring:
   liquibase:
-    contexts: dev
+    contexts: dev, faker
