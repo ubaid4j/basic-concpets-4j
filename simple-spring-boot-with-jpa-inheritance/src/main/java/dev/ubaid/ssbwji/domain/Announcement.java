@@ -1,4 +1,4 @@
-package dev.ubaid.ssbwj.domain;
+package dev.ubaid.ssbwji.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

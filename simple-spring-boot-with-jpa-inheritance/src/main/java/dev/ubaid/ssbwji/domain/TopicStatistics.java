@@ -1,4 +1,4 @@
-package dev.ubaid.ssbwj.domain;
+package dev.ubaid.ssbwji.domain;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -7,7 +7,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 
-public class TopicStatistics extends AbstractAuditingEntity<Long> {
+public class TopicStatistics {
     
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
@@ -20,7 +20,6 @@ public class TopicStatistics extends AbstractAuditingEntity<Long> {
     
     private Long views;
 
-    @Override
     public Long getId() {
         return id;
     }

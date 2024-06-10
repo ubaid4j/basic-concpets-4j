@@ -1,4 +1,4 @@
-package dev.ubaid.ssbwj.domain;
+package dev.ubaid.ssbwji.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table
-public class PostV2 extends Topic {
+public class Post extends Topic {
     
     @NotNull
     @Column

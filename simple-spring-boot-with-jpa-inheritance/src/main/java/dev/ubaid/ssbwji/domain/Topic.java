@@ -1,4 +1,4 @@
-package dev.ubaid.ssbwj.domain;
+package dev.ubaid.ssbwji.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,7 +12,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table
-public class Topic extends AbstractAuditingEntity<Long> {
+public class Topic {
     
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
@@ -29,7 +29,6 @@ public class Topic extends AbstractAuditingEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     private Board board;
 
-    @Override
     public Long getId() {
         return id;
     }
