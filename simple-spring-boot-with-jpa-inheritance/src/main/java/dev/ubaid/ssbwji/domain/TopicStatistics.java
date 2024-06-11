@@ -10,7 +10,7 @@ import jakarta.persistence.OneToOne;
 public class TopicStatistics {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @GeneratedValue
     private Long id;
     
     @OneToOne

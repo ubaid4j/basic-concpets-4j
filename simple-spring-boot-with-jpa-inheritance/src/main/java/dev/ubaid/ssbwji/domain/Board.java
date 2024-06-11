@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
 public class Board {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @GeneratedValue
     private Long id;
     
     @NotNull

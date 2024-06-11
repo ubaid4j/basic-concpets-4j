@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
 
-@Entity
+//@Entity
 @Table
 public class Announcement extends Topic {
     
