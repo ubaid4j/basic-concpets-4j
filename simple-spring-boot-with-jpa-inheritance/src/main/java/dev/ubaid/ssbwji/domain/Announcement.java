@@ -7,8 +7,8 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.Instant;
 
-//@Entity
-@Table
+@Entity
+//@Table(name = "announcement")
 public class Announcement extends Topic {
     
     @NotNull

@@ -31,7 +31,7 @@ public class Topic {
     @NotNull
     private String title;
     
-    @Column(name = "DTYPE")
+    @Column(name = "DTYPE", insertable = false, updatable = false)
     private String dType;
     
     @ManyToOne(fetch = FetchType.LAZY)

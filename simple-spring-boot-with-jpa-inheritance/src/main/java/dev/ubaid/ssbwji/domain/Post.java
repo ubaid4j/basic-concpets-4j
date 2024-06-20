@@ -6,7 +6,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table
+//@Table(name = "post")
 public class Post extends Topic {
     
     @NotNull
